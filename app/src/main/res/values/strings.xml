@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Handheld-Reader</string>
+    <string name="uhf_msg_inventory_stop_fail">Stop failure</string>
+    <string name="uhf_msg_inventory_open_fail">Open failure</string>
+    <string name="uhf_msg_inventory_fail">Inventory failure</string>
+    <string name="uhf_msg_sdk_open_fail">SDK Scanner open failure!</string>
+    <!-- inventorytag -->
+    <string name="tvInventoryName">Inventory Tag</string>
+    <string name="tvCountOfTags">Total  </string>
+    <string name="rbInventorySingle">Single</string>
+    <string name="rbInventoryLoop">Auto</string>
+    <string name="rbInventoryAnti">Anti</string>
+    <string name="tvQ">Q value：</string>
+    <string name="btInventory">Start</string>
+    <string name="title_stop_Inventory">Stop</string>
+    <string name="tvTagUii">EPC</string>
+    <string name="tvTagLen">Length</string>
+    <string name="tvTagCount">Count</string>
+    <string name="btClear">Clear</string>
+    <string name="tvTag">Tag</string>
+</resources>
