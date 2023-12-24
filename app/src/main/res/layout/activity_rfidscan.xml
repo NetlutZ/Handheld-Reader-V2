@@ -19,7 +19,7 @@
             android:layout_weight="1"
             android:text="@string/rbInventorySingle"
             android:textSize="15sp"
-            android:buttonTint="@color/blue"/>
+            android:buttonTint="@color/blue1"/>
 
         <RadioButton
             android:id="@+id/RbInventoryLoop"
@@ -29,14 +29,14 @@
             android:checked="true"
             android:text="@string/rbInventoryLoop"
             android:textSize="15sp"
-            android:buttonTint="@color/blue"/>
+            android:buttonTint="@color/blue1"/>
 
     </RadioGroup>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/gray" />
+        android:background="@color/gray1" />
 
     <LinearLayout
         android:id="@+id/layout12"
@@ -52,7 +52,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
-            android:background="@color/blue"
+            android:background="@color/blue1"
             android:text="@string/btInventory"
             android:textColor="@color/white" />
 
@@ -62,7 +62,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
-            android:background="@color/blue"
+            android:background="@color/blue1"
             android:text="@string/btClear"
             android:textColor="@color/white"
             android:textSize="15sp" />
@@ -73,7 +73,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
-            android:background="@color/blue"
+            android:background="@color/blue1"
             android:text="Import"
             android:textColor="@color/white"
             android:textSize="15sp" />
@@ -84,7 +84,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
-            android:background="@color/blue"
+            android:background="@color/blue1"
             android:text="Home"
             android:textColor="@color/white"
             android:textSize="15sp" />
@@ -94,7 +94,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/gray" />
+        android:background="@color/gray1" />
 
     <LinearLayout
         android:id="@+id/layout4"
@@ -122,7 +122,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:text="0"
-            android:textColor="@color/red"
+            android:textColor="@color/red1"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -147,7 +147,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/gray" />
+        android:background="@color/gray1" />
 
     <ListView
         android:id="@+id/LvTags"

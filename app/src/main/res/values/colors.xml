@@ -1,8 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
+
     <color name="white">#FFFFFFFF</color>
-    <color name="blue">#0ba5ec</color>
-    <color name="gray">#808080</color>
-    <color name="red">#FF0000</color>
+
+    <color name="blue1">#4780B6</color>
+    <color name="blue2">#0BA5EC</color>     <!--  start text  -->
+    <color name="blue3">#CDE5FB</color>     <!--  bottom bar  -->
+    <color name="blue4">#E7F2FD</color>     <!--  border start  -->
+    <color name="blue5">#7CD4FD</color>     <!--  first menu button  -->
+    <color name="blue6">#5EABF3</color>     <!--  header nav  -->
+    <color name="blue7">#0086C9</color>     <!--  cancel text, confirm background, top bar  -->
+<!--    -->
+
+    <color name="gray1">#808080</color>
+    <color name="gray2">#E3E4E4</color>     <!--  bottom bar  -->
+    <color name="gray3">#98A2B3</color>     <!--  border square  -->
+    <color name="gray4">#667085</color>     <!--  shadow  -->
+
+    <color name="red1">#FF0000</color>
+    <color name="red2">#F04438</color>      <!--  cancel border  -->
+    <color name="red3">#B42318</color>      <!--  cancel text  -->
+    <color name="red4">#B00020</color>      <!--  cancel circle   -->
+
+    <color name="orange1">#FE8273</color>
+
+    <color name="green1">#32D583</color>
+
 </resources>
