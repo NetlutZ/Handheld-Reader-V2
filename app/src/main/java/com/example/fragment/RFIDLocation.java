@@ -1,40 +1,56 @@
-package com.example.handheld_reader;
+package com.example.fragment;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.handheld_reader.MainActivity;
+import com.example.handheld_reader.R;
 import com.example.view.UhfLocationCanvasView;
 import com.rscja.deviceapi.RFIDWithUHFUART;
 import com.rscja.deviceapi.interfaces.IUHF;
 import com.rscja.deviceapi.interfaces.IUHFLocationCallback;
 
-public class RFIDLocation extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class RFIDLocation extends Fragment {
     String TAG="UHF_LocationFragment";
     private RFIDWithUHFUART mReader;
     private UhfLocationCanvasView llChart;
     private EditText etEPC;
     private Button btStart,btStop;
     private PlaySoundThread playSoundThread;
+    Activity activity = getActivity();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rfidlocation);
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
         playSoundThread = new PlaySoundThread();
         playSoundThread.start();
 
-        llChart = findViewById(R.id.llChart);
-        etEPC = findViewById(R.id.etEPC);
-        btStart = findViewById(R.id.btStart);
-        btStop = findViewById(R.id.btStop);
+        llChart = getView().findViewById(R.id.llChart);
+        etEPC = getView().findViewById(R.id.etEPC);
+        btStart = getView().findViewById(R.id.btStart);
+        btStop = getView().findViewById(R.id.btStop);
 
         btStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,35 +74,21 @@ public class RFIDLocation extends AppCompatActivity {
         }
     }
 
-    /*
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.i(TAG, "onDestroyView");
-        stopLocation();
-        playSoundThread.stopPlay();
-        Log.i(TAG, "onDestroyView end");
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_rfid_location, container, false);
     }
-
-    @Override
-    public void myOnKeyDwon() {
-        if(btStart.isEnabled()) {
-            startLocation();
-        }else{
-            stopLocation();
-        }
-    }
-
-     */
 
     private void startLocation(){
         String epc=etEPC.getText().toString();
         if(epc.equals("")){
-            Toast.makeText(RFIDLocation.this, R.string.location_fail,Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, R.string.location_fail,Toast.LENGTH_SHORT).show();
             return;
         }
         Log.d("EPC",epc.toString());
-        boolean result= mReader.startLocation(RFIDLocation.this,epc, IUHF.Bank_EPC,32,new IUHFLocationCallback(){
+        boolean result= mReader.startLocation(getActivity(),epc, IUHF.Bank_EPC,32,new IUHFLocationCallback(){
             @Override
             public void getLocationValue(int i, boolean b) {
                 llChart.setData(i);
@@ -106,7 +108,7 @@ public class RFIDLocation extends AppCompatActivity {
 
         });
         if(!result){
-            Toast.makeText(RFIDLocation.this, R.string.psam_msg_fail,Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, R.string.psam_msg_fail,Toast.LENGTH_SHORT).show();
             Log.d("Location","FAIL");
             return;
         }
@@ -125,9 +127,6 @@ public class RFIDLocation extends AppCompatActivity {
         }
     }
 
-    /**
-     * 播放声音
-     **/
     private Object objectLock = new Object();
 
     private class PlaySoundThread extends Thread {

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:background="@color/gray2"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:background="@android:color/transparent"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/blue7"
+            android:layout_marginVertical="5dp"/>
+
+<!--        <Button-->
+<!--            android:id="@+id/BtStart"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_toRightOf="@+id/btnCancel"-->
+<!--            android:text="Start"-->
+<!--            android:background="@drawable/button_blue_border"-->
+<!--            android:layout_marginLeft="5dp"-->
+<!--            android:layout_marginVertical="5dp"-->
+<!--            android:textColor="@color/blue2"-->
+<!--            android:textStyle="bold"-->
+<!--            android:visibility="gone"/>-->
+<!--        <Button-->
+<!--            android:id="@+id/BtClear"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Clear"-->
+<!--            android:layout_toRightOf="@+id/BtStart"-->
+<!--            android:layout_marginLeft="5dp"-->
+<!--            android:layout_marginVertical="5dp"-->
+<!--            android:background="@drawable/button_red_border"-->
+<!--            android:textColor="@color/red3"-->
+<!--            android:textStyle="bold"-->
+<!--            android:visibility="gone"/>-->
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnConfirm"
+            android:text="Confirm"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/button_blue"
+            android:layout_marginVertical="5dp"
+            android:textColor="@color/white"
+            android:padding="10dp"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+</RelativeLayout>

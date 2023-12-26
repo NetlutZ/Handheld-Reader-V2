@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="2dp" >
+
+    <RelativeLayout
+        android:id="@+id/listItem"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+        <TextView
+            android:id="@+id/DeviceName"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/DeviceImage"
+            android:text="Name"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/TvTagUii"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/DeviceName"
+            android:layout_toRightOf="@+id/DeviceImage"
+            android:text="tag" />
+
+        <ImageView
+            android:id="@+id/DeviceImage"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/TvTagCount"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/TvTagUii"
+            android:layout_weight="1"
+            android:paddingTop="3dp"
+            android:paddingBottom="2dp"
+            android:text="count" />
+
+        <TextView
+            android:id="@+id/TvTagRssi"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/TvTagCount"
+            android:layout_weight="1"
+            android:paddingTop="3dp"
+            android:paddingBottom="2dp"
+            android:text="Rssi" />
+
+        <ImageButton
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="55dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/button_circle"
+            android:src="@drawable/ic_cancel" />
+
+    </RelativeLayout>
+
+</LinearLayout>
