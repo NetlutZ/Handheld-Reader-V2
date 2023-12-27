@@ -3,7 +3,19 @@
     <style name="Base.Theme.HandheldReader" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+<!--        <item name="android:actionOverflowButtonStyle">@style/MyActionButtonOverflow</item>-->
+        <item name="android:actionMenuTextColor">@color/white</item>
+
     </style>
 
     <style name="Theme.HandheldReader" parent="Base.Theme.HandheldReader" />
+
+<!--    <style name="MyActionButtonOverflow" parent="android:style/Widget.Holo.Light.ActionButton.Overflow">-->
+<!--        <item name="android:src">@drawable/user</item>-->
+<!--        <item name="android:background">?android:attr/actionBarItemBackground</item>-->
+<!--        <item name="android:contentDescription">"Lala"</item>-->
+<!--    </style>-->
+
+
 </resources>

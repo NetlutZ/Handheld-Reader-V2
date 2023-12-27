@@ -11,12 +11,14 @@
     <color name="blue5">#7CD4FD</color>     <!--  first menu button  -->
     <color name="blue6">#5EABF3</color>     <!--  header nav  -->
     <color name="blue7">#0086C9</color>     <!--  cancel text, confirm background, top bar  -->
+    <color name="blue8">#53B1FD</color>     <!--  search icon  -->
 <!--    -->
 
     <color name="gray1">#808080</color>
     <color name="gray2">#E3E4E4</color>     <!--  bottom bar  -->
     <color name="gray3">#98A2B3</color>     <!--  border square  -->
     <color name="gray4">#667085</color>     <!--  shadow  -->
+    <color name="gray5">#D0D5DD</color>
 
     <color name="red1">#FF0000</color>
     <color name="red2">#F04438</color>      <!--  clear border  -->

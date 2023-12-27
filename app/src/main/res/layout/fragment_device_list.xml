@@ -1,0 +1,65 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.fragment.DeviceList"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/search_bg"
+        app:queryHint="Search"
+        app:iconifiedByDefault="false"
+        android:layout_margin="20dp"
+        />
+
+    <RadioGroup
+        android:id="@+id/device_option"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp"
+        android:weightSum="2">
+
+        <RadioButton
+            android:id="@+id/name_selected"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:text="Device Name"
+            android:layout_weight="1"
+            android:background="@drawable/radio_selector"
+            android:checked="true"
+            android:layout_marginRight="30dp"
+            android:buttonTint="@color/blue1"
+            android:textAlignment="center"
+            android:button="@color/white"/>
+        <RadioButton
+            android:id="@+id/tag_selected"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:text="Device RFID Tag"
+            android:layout_weight="1"
+            android:background="@drawable/radio_selector"
+            android:buttonTint="@color/blue1"
+            android:textAlignment="center"
+            android:button="@color/white"/>
+    </RadioGroup>
+
+
+    <ListView
+        android:id="@+id/deviceList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <include layout="@layout/scan_bottom_bar"
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"/>
+
+</LinearLayout>

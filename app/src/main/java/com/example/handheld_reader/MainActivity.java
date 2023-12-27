@@ -4,11 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.MenuCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.example.fragment.DeviceList;
 import com.example.fragment.Home;
 import com.example.fragment.RFIDLocation;
 import com.example.fragment.RFIDScan;
@@ -39,6 +43,15 @@ public class MainActivity extends BaseTabFragmentActivity implements NavigationV
         }
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.user_menu,menu);
+        return true;
+
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -51,6 +64,10 @@ public class MainActivity extends BaseTabFragmentActivity implements NavigationV
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RFIDLocation()).commit();
             getSupportActionBar().setTitle("Location");
 //            startActivity(new Intent(this, RFIDLocation.class));
+        }
+        else if(item.getItemId() == R.id.nav_devicelist) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DeviceList()).commit();
+            getSupportActionBar().setTitle("Device List");
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
