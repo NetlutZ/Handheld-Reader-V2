@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.fragment.DeviceList;
+import com.example.fragment.History;
 import com.example.fragment.Home;
 import com.example.fragment.RFIDLocation;
 import com.example.fragment.RFIDScan;
@@ -68,6 +69,10 @@ public class MainActivity extends BaseTabFragmentActivity implements NavigationV
         else if(item.getItemId() == R.id.nav_devicelist) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DeviceList()).commit();
             getSupportActionBar().setTitle("Device List");
+        }
+        else if(item.getItemId() == R.id.nav_settings) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new History()).commit();
+            getSupportActionBar().setTitle("Settings");
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
