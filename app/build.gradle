@@ -20,10 +20,19 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     buildTypes {
+        def url = "http://10.0.2.2:8080"
+        debug {
+            buildConfigField "String", 'BASE_URL', "\"${url}\""
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", 'BASE_URL', "\"${url}\""
         }
     }
     compileOptions {

@@ -22,6 +22,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.handheld_reader.BuildConfig;
 import com.example.handheld_reader.R;
 import com.example.model.Device;
 import com.google.gson.Gson;
@@ -103,7 +104,7 @@ public class DeviceList extends Fragment {
         protected String doInBackground(String... params) {
             try {
                 OkHttpClient client = new OkHttpClient();
-                String url = "http://10.0.2.2:8080/device/";
+                String url = BuildConfig.BASE_URL+"/device";
 
                 Request request = new Request.Builder()
                         .url(url)

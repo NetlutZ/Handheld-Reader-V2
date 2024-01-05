@@ -8,6 +8,7 @@ import androidx.core.view.MenuCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -42,6 +43,9 @@ public class MainActivity extends BaseTabFragmentActivity implements NavigationV
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new Home()).commit();
             navigationView.setCheckedItem(R.id.nav_home);
         }
+
+        String url = BuildConfig.BASE_URL;
+        Log.d("URL", url);
     }
 
 
