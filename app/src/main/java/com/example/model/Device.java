@@ -1,26 +1,32 @@
 package com.example.model;
 
-public class Device {
+import java.io.Serializable;
+
+public class Device implements Serializable {
     private int id;
     private String name;
     private String serialNumber;
     private String rfid;
-    private String status;
+    private String rfidStatus;
     private String purchaseDate;
     private String warrantyExpirationDate;
     private String location;
     private int activityId;
+    private int maxBorrowDate;
+    private String image;
 
-    public Device(int id, String name, String serialNumber, String rfid, String status, String purchaseDate, String warrantyExpirationDate, String location, int activityId) {
+    public Device(int id, String name, String serialNumber, String rfid, String rfidStatus, String purchaseDate, String warrantyExpirationDate, String location, int activityId, int maxBorrowDate, String image) {
         this.id = id;
         this.name = name;
         this.serialNumber = serialNumber;
         this.rfid = rfid;
-        this.status = status;
+        this.rfidStatus = rfidStatus;
         this.purchaseDate = purchaseDate;
         this.warrantyExpirationDate = warrantyExpirationDate;
         this.location = location;
         this.activityId = activityId;
+        this.maxBorrowDate = 1;
+        this.image = image;
     }
 
     public int getId() {
@@ -39,8 +45,8 @@ public class Device {
         return rfid;
     }
 
-    public String getStatus() {
-        return status;
+    public String getRfidStatus() {
+        return rfidStatus;
     }
 
     public String getPurchaseDate() {
@@ -57,6 +63,14 @@ public class Device {
 
     public int getActivityId() {
         return activityId;
+    }
+
+    public int getMaxBorrowDate() {
+        return maxBorrowDate;
+    }
+
+    public String getImg() {
+        return image;
     }
 }
 

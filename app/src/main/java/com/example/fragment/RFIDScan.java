@@ -23,6 +23,8 @@ import android.widget.Toast;
 
 import com.example.handheld_reader.MainActivity;
 import com.example.handheld_reader.R;
+import com.example.model.Device;
+import com.example.model.DeviceGroupName;
 import com.rscja.deviceapi.RFIDWithUHFUART;
 import com.rscja.deviceapi.entity.UHFTAGInfo;
 
@@ -59,6 +61,7 @@ public class RFIDScan extends KeyDwonFragment {
     private boolean isMapping = false;
     public MainActivity mContext;
     Activity activity = getActivity();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,7 +74,7 @@ public class RFIDScan extends KeyDwonFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mContext =(MainActivity)getActivity();
+        mContext = (MainActivity) getActivity();
         mContext.currentFragment = this;
 
         tagList = new ArrayList<HashMap<String, String>>();
@@ -105,6 +108,25 @@ public class RFIDScan extends KeyDwonFragment {
         BtInventory.setOnClickListener(new RFIDScan.BtInventoryClickListener());
 
         LvTags.setAdapter(adapter);
+
+        // FOR TEST LOCATION
+        LvTags.setOnItemClickListener((parent, view, position, id) -> {
+            HashMap<String, String> map = (HashMap<String, String>) LvTags.getItemAtPosition(position);
+            Device device = new Device(0, "", "", map.get("tagUii"), "", "", "", "", 0, 0, "");
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("device", device);
+
+            // Create a new instance of the RFIDLocation fragment
+            RFIDLocation fragment = new RFIDLocation();
+            fragment.setArguments(bundle);
+
+            // Move to RFIDLocation fragment with data
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+        });
+
+
         clearData();
 
         handler = new Handler() {
@@ -113,7 +135,7 @@ public class RFIDScan extends KeyDwonFragment {
             public void handleMessage(Message msg) {
                 String result = msg.obj + "";
                 String[] strs = result.split("@");
-                if (addEPCToList(strs[0], strs[1])){
+                if (addEPCToList(strs[0], strs[1])) {
 //                    UIHelper.playSoundSuccess();
                 }
 
@@ -128,7 +150,7 @@ public class RFIDScan extends KeyDwonFragment {
     private class Test implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            Toast.makeText(getActivity(),"CANCEL",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "CANCEL", Toast.LENGTH_SHORT).show();
 //            Log.d("CLICK","CANCEL CLICK");
         }
     }
@@ -138,7 +160,7 @@ public class RFIDScan extends KeyDwonFragment {
         try {
             mReader = RFIDWithUHFUART.getInstance();
         } catch (Exception ex) {
-            Log.e("initUHF Error",ex.toString());
+            Log.e("initUHF Error", ex.toString());
             return;
         }
 
@@ -155,9 +177,8 @@ public class RFIDScan extends KeyDwonFragment {
             // TODO Auto-generated method stub
             try {
                 return mReader.init();
-            }
-            catch (Exception ex){
-                Log.e("InitTask",ex.toString());
+            } catch (Exception ex) {
+                Log.e("InitTask", ex.toString());
                 return false;
             }
         }
@@ -187,7 +208,7 @@ public class RFIDScan extends KeyDwonFragment {
                 mypDialog.show();
 
             } catch (Exception ex) {
-                Log.e("InitTask",ex.toString());
+                Log.e("InitTask", ex.toString());
                 return;
             }
         }
@@ -214,7 +235,7 @@ public class RFIDScan extends KeyDwonFragment {
 //            if (true) {
                 BtInventory.setText(getString(R.string.btInventory));
             } else {
-                Toast.makeText(activity, R.string.uhf_msg_inventory_stop_fail,Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, R.string.uhf_msg_inventory_stop_fail, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -305,11 +326,10 @@ public class RFIDScan extends KeyDwonFragment {
     }
 
     private void readTag() {
-        if (BtInventory.getText().equals(getString(R.string.btInventory)))
-        {
+        if (BtInventory.getText().equals(getString(R.string.btInventory))) {
 //            if (mReader == null && false) {
             if (mReader == null) {
-                Toast.makeText(activity, R.string.uhf_msg_sdk_open_fail,Toast.LENGTH_SHORT);
+                Toast.makeText(activity, R.string.uhf_msg_sdk_open_fail, Toast.LENGTH_SHORT);
                 return;
             }
 
@@ -323,7 +343,7 @@ public class RFIDScan extends KeyDwonFragment {
 //                        UIHelper.playSoundSuccess();
                         tv_count.setText("" + adapter.getCount());
                     } else {
-                        Toast.makeText(activity, R.string.uhf_msg_inventory_fail,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, R.string.uhf_msg_inventory_fail, Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
@@ -337,7 +357,7 @@ public class RFIDScan extends KeyDwonFragment {
                         new RFIDScan.TagThread().start();
                     } else {
                         mReader.stopInventory();
-                        Toast.makeText(activity, R.string.uhf_msg_inventory_open_fail,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, R.string.uhf_msg_inventory_open_fail, Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
