@@ -1,21 +1,44 @@
 package com.example.model;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Date;
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class HistoryItem {
+public class HistoryItem implements Serializable{
     private HashMap<String,Integer> deviceDetail = new HashMap<String, Integer>();
-    private LocalDate date;
-    private LocalTime time;
-    private String status;
+    private String activityCode;
+    private String activityDate;
+    private String activityTime;
+    private int userId;
+    private String device;
 
-    public HistoryItem(HashMap<String, Integer> deviceDetail, LocalDate date, LocalTime time, String status) {
+
+    public HistoryItem(String activityCode, String activityDate, String activityTime, int userId, String device, HashMap<String, Integer> deviceDetail) {
+        this.activityCode = activityCode;
+        this.activityDate = activityDate;
+        this.activityTime = activityTime;
+        this.userId = userId;
+        this.device = device;
         this.deviceDetail = deviceDetail;
-        this.date = date;
-        this.time = time;
-        this.status = status;
+    }
+
+    public String getActivityCode() {
+        return activityCode;
+    }
+
+    public String getActivityDate() {
+        return activityDate;
+    }
+
+    public String getActivityTime() {
+        return activityTime;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public String getDevice() {
+        return device;
     }
 
     public HashMap<String, Integer> getDeviceDetail() {
@@ -26,27 +49,7 @@ public class HistoryItem {
         this.deviceDetail = deviceDetail;
     }
 
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public LocalTime getTime() {
-        return time;
-    }
-
-    public void setTime(LocalTime time) {
-        this.time = time;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    public void setActivityDate(String activityDate) {
+        this.activityDate = activityDate;
     }
 }

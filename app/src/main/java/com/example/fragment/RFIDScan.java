@@ -109,7 +109,7 @@ public class RFIDScan extends KeyDwonFragment {
 
         LvTags.setAdapter(adapter);
 
-        // FOR TEST LOCATION
+        // FOR TEST LOCATION // TODO - DELETE THIS
         LvTags.setOnItemClickListener((parent, view, position, id) -> {
             HashMap<String, String> map = (HashMap<String, String>) LvTags.getItemAtPosition(position);
             Device device = new Device(0, "", "", map.get("tagUii"), "", "", "", "", 0, 0, "");

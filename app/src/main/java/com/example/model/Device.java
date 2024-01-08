@@ -29,6 +29,10 @@ public class Device implements Serializable {
         this.image = image;
     }
 
+    public Device() {
+
+    }
+
     public int getId() {
         return id;
     }
@@ -71,6 +75,18 @@ public class Device implements Serializable {
 
     public String getImg() {
         return image;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }
 
