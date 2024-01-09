@@ -1,10 +1,15 @@
 package com.example.fragment;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -34,7 +39,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HistoryDialog extends Fragment {
+public class HistoryDialog extends AppCompatDialogFragment {
     private String date;
     private String time;
     private String status;
@@ -45,37 +50,73 @@ public class HistoryDialog extends Fragment {
     HistoryItem historyItem;
     CustomAdapter customAdapter;
 
+    @NonNull
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.history_dialog, container, false);
-    }
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.history_dialog, null);
+        builder.setView(view)
+        .setNegativeButton("close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
-        dateView = getActivity().findViewById(R.id.history_dialog_date);
-        timeView = getActivity().findViewById(R.id.history_dialog_time);
-        statusView = getActivity().findViewById(R.id.history_dialog_status);
-        listView = getActivity().findViewById(R.id.history_dialog_list);
-        customAdapter = new CustomAdapter(getActivity().getApplicationContext());
+            }
+        });
+        dateView = view.findViewById(R.id.history_dialog_date);
+        timeView = view.findViewById(R.id.history_dialog_time);
+        statusView = view.findViewById(R.id.history_dialog_status);
+        listView = view.findViewById(R.id.history_dialog_list);
+        customAdapter = new CustomAdapter(view.getContext());
         listView.setAdapter(customAdapter);
-
 
         Bundle bundle = getArguments();
         if (bundle != null) {
             historyItem = (HistoryItem) bundle.getSerializable("historyItem");
             if (historyItem != null) {
-                Log.d("HistoryDialog", "historyItem: " + historyItem.getActivityDate());
                 dateView.setText(historyItem.getActivityDate());
                 timeView.setText(historyItem.getActivityTime());
                 statusView.setText(historyItem.getActivityCode());
+                Log.d("HistoryDialog", "historyItem: " + historyItem.getActivityDate());
             }
         }
         new GetDeviceData().execute();
+
+        return builder.create();
     }
+
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//                             Bundle savedInstanceState) {
+//        // Inflate the layout for this fragment
+//        return inflater.inflate(R.layout.history_dialog, container, false);
+//    }
+
+//    @Override
+//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+//        super.onActivityCreated(savedInstanceState);
+//
+//        dateView = getActivity().findViewById(R.id.history_dialog_date);
+//        timeView = getActivity().findViewById(R.id.history_dialog_time);
+//        statusView = getActivity().findViewById(R.id.history_dialog_status);
+//        listView = getActivity().findViewById(R.id.history_dialog_list);
+//        customAdapter = new CustomAdapter(getActivity().getApplicationContext());
+//        listView.setAdapter(customAdapter);
+//
+//
+//        Bundle bundle = getArguments();
+//        if (bundle != null) {
+//            historyItem = (HistoryItem) bundle.getSerializable("historyItem");
+//            if (historyItem != null) {
+//                Log.d("HistoryDialog", "historyItem: " + historyItem.getActivityDate());
+//                dateView.setText(historyItem.getActivityDate());
+//                timeView.setText(historyItem.getActivityTime());
+//                statusView.setText(historyItem.getActivityCode());
+//            }
+//        }
+//        new GetDeviceData().execute();
+//    }
 
     private class GetDeviceData extends AsyncTask<String, Void, String> {
         @Override
@@ -83,9 +124,9 @@ public class HistoryDialog extends Fragment {
             HttpURLConnection connection = null;
             BufferedReader reader = null;
             String[] deviceId = historyItem.getDevice().split(",");
-            for (int i = 0; i < deviceId.length; i++) {
+            for (String s : deviceId) {
                 try {
-                    URL url = new URL(URL + "/device/" + deviceId[i]);
+                    URL url = new URL(URL + "/device/" + s);
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
                     connection.connect();

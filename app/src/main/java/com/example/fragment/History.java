@@ -68,17 +68,22 @@ public class History extends Fragment {
         customListAdapter = new CustomListAdapter(getActivity().getApplicationContext());
         listView.setAdapter(customListAdapter);
         listView.setOnItemClickListener(((parent, view, position, id) -> {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("historyItem", customListAdapter.getItem(position));
-
-            HistoryDialog historyDialog = new HistoryDialog();
-            historyDialog.setArguments(bundle);
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, historyDialog).commit();
+            OpenDialog(position);
+//            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, historyDialog).commit();
 
         }));
 
         new GetHistoryData().execute();
 
+    }
+
+    public void OpenDialog(int position) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("historyItem", customListAdapter.getItem(position));
+
+        HistoryDialog historyDialog = new HistoryDialog();
+        historyDialog.setArguments(bundle);
+        historyDialog.show(getActivity().getSupportFragmentManager(), "History Dialog");
     }
 
 
