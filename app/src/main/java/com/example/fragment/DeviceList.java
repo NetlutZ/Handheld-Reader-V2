@@ -146,7 +146,7 @@ public class DeviceList extends Fragment {
                     // Group device by name and set quantity
                     boolean isExist = false;
                     for (DeviceGroupName deviceGroupName : contentList) {
-                        if (device.getName().equals(deviceGroupName.getName())) {
+                        if (device.getName().equals(deviceGroupName.getName()) && device.getRfidStatus() != null) {
                             if (device.getRfidStatus().equals("InStorage")) {
                                 deviceGroupName.setQuantity(deviceGroupName.getQuantity() + 1);
                             }
@@ -154,10 +154,13 @@ public class DeviceList extends Fragment {
                         }
                     }
                     if (!isExist) {
-                        if (device.getRfidStatus().equals("InStorage")) {
-                            contentList.add(new DeviceGroupName(device.getId(), device.getName(), 1, 2, device.getImg()));
-                        } else {
-                            contentList.add(new DeviceGroupName(device.getId(), device.getName(), 0, 2, device.getImg()));
+                        if (device.getRfidStatus() != null) {
+
+                            if (device.getRfidStatus().equals("InStorage")) {
+                                contentList.add(new DeviceGroupName(device.getId(), device.getName(), 1, 2, device.getImg()));
+                            } else {
+                                contentList.add(new DeviceGroupName(device.getId(), device.getName(), 0, 2, device.getImg()));
+                            }
                         }
 
                     }
@@ -204,21 +207,28 @@ public class DeviceList extends Fragment {
             devices = gson.fromJson(s, Device[].class);
 
             for (Device device : devices) {
+                Log.d("DEvice", device.getName());
                 // group device by name and quantity
                 boolean isExist = false;
                 for (DeviceGroupName deviceGroupName : contentList) {
                     if (device.getName().equals(deviceGroupName.getName())) {
-                        if (device.getRfidStatus().equals("InStorage")) {
-                            deviceGroupName.setQuantity(deviceGroupName.getQuantity() + 1);
+                        if (device.getRfidStatus() != null) {
+
+                            if (device.getRfidStatus().equals("InStorage")) {
+                                deviceGroupName.setQuantity(deviceGroupName.getQuantity() + 1);
+                            }
+                            isExist = true;
                         }
-                        isExist = true;
                     }
                 }
                 if (!isExist) {
-                    if (device.getRfidStatus().equals("InStorage")) {
-                        contentList.add(new DeviceGroupName(device.getId(), device.getName(), 1, 2, device.getImg()));
-                    } else {
-                        contentList.add(new DeviceGroupName(device.getId(), device.getName(), 0, 2, device.getImg()));
+                    if (device.getRfidStatus() != null) {
+
+                        if (device.getRfidStatus().equals("InStorage")) {
+                            contentList.add(new DeviceGroupName(device.getId(), device.getName(), 1, 2, device.getImg()));
+                        } else {
+                            contentList.add(new DeviceGroupName(device.getId(), device.getName(), 0, 2, device.getImg()));
+                        }
                     }
 
                 }
