@@ -145,10 +145,12 @@ public class RFIDLocation extends Fragment {
             if (devices.length > 0) {
                 //random in devices and rfidStatus = InStorage
                 for (int i = 0; i < devices.length; i++) {
-                    if (devices[i].getRfidStatus().equals("InStorage")) {
-                        deviceName.setText(devices[i].getName());
-                        deviceTag.setText(devices[i].getRfid());
-                        break;
+                    if (devices[i].getRfidStatus() != null) {
+                        if (devices[i].getRfidStatus().equals("InStorage")) {
+                            deviceName.setText(devices[i].getName());
+                            deviceTag.setText(devices[i].getRfid());
+                            break;
+                        }
                     }
                 }
 

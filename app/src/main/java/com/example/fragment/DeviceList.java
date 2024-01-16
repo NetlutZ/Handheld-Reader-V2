@@ -132,6 +132,32 @@ public class DeviceList extends Fragment {
         getDevice.execute();
     }
 
+    private void GroupDevice() {
+        List<DeviceGroupName> contentList = new ArrayList<>();
+        for (Device device : devices) {
+            // Group device by name and set quantity
+            boolean isExist = false;
+            if (device.getRfidStatus() != null && device.getName() != null) {
+                for (DeviceGroupName deviceGroupName : contentList) {
+                    if (device.getName().equals(deviceGroupName.getName())) {
+                        if (device.getRfidStatus().equals("InStorage")) {
+                            deviceGroupName.setQuantity(deviceGroupName.getQuantity() + 1);
+                        }
+                        isExist = true;
+                    }
+                }
+                if (!isExist) {
+                    if (device.getRfidStatus().equals("InStorage")) {
+                        contentList.add(new DeviceGroupName(device.getId(), device.getName(), 1, 2, device.getImg()));
+                    } else {
+                        contentList.add(new DeviceGroupName(device.getId(), device.getName(), 0, 2, device.getImg()));
+                    }
+                }
+            }
+        }
+        customAdapter.setGroupData(contentList);
+    }
+
     public class DeviceOption implements RadioGroup.OnCheckedChangeListener {
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -139,33 +165,8 @@ public class DeviceList extends Fragment {
             searchView.clearFocus();
 
             if (checkedId == R.id.name_selected) {
-                List<DeviceGroupName> contentList = new ArrayList<>();
                 Toast.makeText(getActivity(), "name option", Toast.LENGTH_SHORT).show();
-
-                for (Device device : devices) {
-                    // Group device by name and set quantity
-                    boolean isExist = false;
-                    for (DeviceGroupName deviceGroupName : contentList) {
-                        if (device.getName().equals(deviceGroupName.getName()) && device.getRfidStatus() != null) {
-                            if (device.getRfidStatus().equals("InStorage")) {
-                                deviceGroupName.setQuantity(deviceGroupName.getQuantity() + 1);
-                            }
-                            isExist = true;
-                        }
-                    }
-                    if (!isExist) {
-                        if (device.getRfidStatus() != null) {
-
-                            if (device.getRfidStatus().equals("InStorage")) {
-                                contentList.add(new DeviceGroupName(device.getId(), device.getName(), 1, 2, device.getImg()));
-                            } else {
-                                contentList.add(new DeviceGroupName(device.getId(), device.getName(), 0, 2, device.getImg()));
-                            }
-                        }
-
-                    }
-                }
-                customAdapter.setGroupData(contentList);
+                GroupDevice();
             } else if (checkedId == R.id.tag_selected) {
                 List<Device> contentList = new ArrayList<>();
                 for (Device device : devices) {
@@ -202,38 +203,13 @@ public class DeviceList extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            List<DeviceGroupName> contentList = new ArrayList<>();
-            Gson gson = new Gson();
-            devices = gson.fromJson(s, Device[].class);
-
-            for (Device device : devices) {
-                Log.d("DEvice", device.getName());
-                // group device by name and quantity
-                boolean isExist = false;
-                for (DeviceGroupName deviceGroupName : contentList) {
-                    if (device.getName().equals(deviceGroupName.getName())) {
-                        if (device.getRfidStatus() != null) {
-
-                            if (device.getRfidStatus().equals("InStorage")) {
-                                deviceGroupName.setQuantity(deviceGroupName.getQuantity() + 1);
-                            }
-                            isExist = true;
-                        }
-                    }
-                }
-                if (!isExist) {
-                    if (device.getRfidStatus() != null) {
-
-                        if (device.getRfidStatus().equals("InStorage")) {
-                            contentList.add(new DeviceGroupName(device.getId(), device.getName(), 1, 2, device.getImg()));
-                        } else {
-                            contentList.add(new DeviceGroupName(device.getId(), device.getName(), 0, 2, device.getImg()));
-                        }
-                    }
-
-                }
+            if (s == null) {
+                Toast.makeText(getActivity(), "No device found / Server Error", Toast.LENGTH_SHORT).show();
+            } else {
+                Gson gson = new Gson();
+                devices = gson.fromJson(s, Device[].class);
+                GroupDevice();
             }
-            customAdapter.setGroupData(contentList);
         }
     }
 

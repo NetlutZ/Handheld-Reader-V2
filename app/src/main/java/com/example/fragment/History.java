@@ -47,6 +47,7 @@ import java.util.List;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class History extends Fragment {
     CustomListAdapter customListAdapter;
@@ -90,118 +91,86 @@ public class History extends Fragment {
     public class GetHistoryData extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                    .url(URL + "/activity")
+                    .get()
+                    .build();
             List<HistoryItem> historyItemList = new ArrayList<>();
-            try {
+            try (Response response = client.newCall(request).execute()) {
                 // Get Activity of User // TODO Change from all to user
-                URL url = new URL(URL + "/activity");
-                connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.connect();
+                String result = null;
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        result = response.body().string();
 
-                InputStream stream = connection.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(stream));
-                StringBuffer result = new StringBuffer();
+                        JSONArray jsonArray = new JSONArray(result.toString());
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    result.append(line);
-                }
+                            String activityCode = jsonObject.getString("activityCode");
+                            String activityDate = jsonObject.getString("activityDate");
+                            String activityTime = jsonObject.getString("activityTime");
+                            int userId = jsonObject.isNull("userId") ? 0 : jsonObject.getInt("userId");
+                            String device = jsonObject.getString("device");
 
-                try {
-                    JSONArray jsonArray = new JSONArray(result.toString());
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                        String activityCode = jsonObject.getString("activityCode");
-                        String activityDate = jsonObject.getString("activityDate");
-                        String activityTime = jsonObject.getString("activityTime");
-                        int userId = jsonObject.isNull("userId") ? 0 : jsonObject.getInt("userId");
-                        String device = jsonObject.getString("device");
-
-                        // Change date format
-                        Instant instant = Instant.parse(activityDate);
-                        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                        activityDate = localDateTime.format(formatter);
+                            // Change date format
+                            Instant instant = Instant.parse(activityDate);
+                            LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                            activityDate = localDateTime.format(formatter);
 
 
-                        // Split device string into array
-                        String[] deviceArray = device.split(",");
-                        HashMap<String, Integer> deviceDetail = new HashMap<>();    // <DeviceName, Quantity of each activity>
+                            // Split device string into array
+                            String[] deviceArray = device.split(",");
+                            HashMap<String, Integer> deviceDetail = new HashMap<>();    // <DeviceName, Quantity of each activity>
 
-                        HttpURLConnection connection2 = null;
-                        BufferedReader reader2 = null;
-                        for (String deviceId : deviceArray) {
-                            try {
-                                // Get device of each activity
-                                URL url2 = new URL(URL + "/device/" + deviceId);
-                                connection2 = (HttpURLConnection) url2.openConnection();
-                                connection2.setRequestMethod("GET");
-                                connection2.connect();
+                            for (String deviceId : deviceArray) {
+                                OkHttpClient client2 = new OkHttpClient();
+                                Request request2 = new Request.Builder()
+                                        .url(URL + "/device/" + deviceId)
+                                        .get()
+                                        .build();
+                                try (Response response2 = client2.newCall(request2).execute()) {
+                                    // Get device of each activity
+                                    String result2 = null;
+                                    if (response2.isSuccessful()) {
+                                        if (response2.body() != null) {
+                                            result2 = response2.body().string();
 
-                                InputStream stream2 = connection2.getInputStream();
-                                reader2 = new BufferedReader(new InputStreamReader(stream2));
-                                StringBuffer result2 = new StringBuffer();
+                                            JSONObject jsonObject2 = new JSONObject(result2.toString());
+                                            String deviceName = jsonObject2.getString("name");
+                                            if (deviceDetail.containsKey(deviceName)) {
+                                                deviceDetail.put(deviceName, deviceDetail.get(deviceName) + 1);
+                                            } else {
+                                                deviceDetail.put(deviceName, 1);
+                                            }
+                                        }
+                                    } else {
 
-                                String line2;
-                                while ((line2 = reader2.readLine()) != null) {
-                                    result2.append(line2);
-                                }
-
-                                JSONObject jsonObject2 = new JSONObject(result2.toString());
-                                String deviceName = jsonObject2.getString("name");
-                                if (deviceDetail.containsKey(deviceName)) {
-                                    deviceDetail.put(deviceName, deviceDetail.get(deviceName) + 1);
-                                } else {
-                                    deviceDetail.put(deviceName, 1);
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            } finally {
-                                if (connection2 != null) {
-                                    connection2.disconnect();
-                                }
-                                try {
-                                    if (reader2 != null) {
-                                        reader2.close();
                                     }
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
                             }
-                        }
 
-                        HistoryItem historyItem = new HistoryItem(activityCode, activityDate, activityTime, userId, device, deviceDetail);
-                        historyItemList.add(historyItem);
+                            HistoryItem historyItem = new HistoryItem(activityCode, activityDate, activityTime, userId, device, deviceDetail);
+                            historyItemList.add(historyItem);
+                        }
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                customListAdapter.setData(historyItemList);
+                            }
+                        });
                     }
+                } else {
 
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            customListAdapter.setData(historyItemList);
-                        }
-                    });
-
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-
-                return result.toString();
+                return null;
             } catch (Exception e) {
+                Log.e("Error", "SERVER ERROR");
                 e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
             }
             return null;
         }
@@ -211,7 +180,6 @@ public class History extends Fragment {
             super.onPostExecute(s);
         }
     }
-
 
 
     public class CustomListAdapter extends BaseAdapter {

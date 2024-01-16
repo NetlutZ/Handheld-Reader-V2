@@ -39,6 +39,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public class HistoryDialog extends AppCompatDialogFragment {
     private String date;
     private String time;
@@ -58,12 +62,12 @@ public class HistoryDialog extends AppCompatDialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.history_dialog, null);
         builder.setView(view)
-        .setNegativeButton("close", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+                .setNegativeButton("close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-            }
-        });
+                    }
+                });
         dateView = view.findViewById(R.id.history_dialog_date);
         timeView = view.findViewById(R.id.history_dialog_time);
         statusView = view.findViewById(R.id.history_dialog_status);
@@ -86,84 +90,36 @@ public class HistoryDialog extends AppCompatDialogFragment {
         return builder.create();
     }
 
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.history_dialog, container, false);
-//    }
-
-//    @Override
-//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//
-//        dateView = getActivity().findViewById(R.id.history_dialog_date);
-//        timeView = getActivity().findViewById(R.id.history_dialog_time);
-//        statusView = getActivity().findViewById(R.id.history_dialog_status);
-//        listView = getActivity().findViewById(R.id.history_dialog_list);
-//        customAdapter = new CustomAdapter(getActivity().getApplicationContext());
-//        listView.setAdapter(customAdapter);
-//
-//
-//        Bundle bundle = getArguments();
-//        if (bundle != null) {
-//            historyItem = (HistoryItem) bundle.getSerializable("historyItem");
-//            if (historyItem != null) {
-//                Log.d("HistoryDialog", "historyItem: " + historyItem.getActivityDate());
-//                dateView.setText(historyItem.getActivityDate());
-//                timeView.setText(historyItem.getActivityTime());
-//                statusView.setText(historyItem.getActivityCode());
-//            }
-//        }
-//        new GetDeviceData().execute();
-//    }
-
     private class GetDeviceData extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... strings) {
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
+
+
             String[] deviceId = historyItem.getDevice().split(",");
             for (String s : deviceId) {
-                try {
-                    URL url = new URL(URL + "/device/" + s);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("GET");
-                    connection.connect();
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder()
+                        .url(URL + "/device/" + s)
+                        .get()
+                        .build();
+                try (Response response = client.newCall(request).execute()) {
+                    String result = null;
+                    if (response.isSuccessful()) {
+                        if (response.body() != null) {
+                            result = response.body().string();
+                            JSONObject jsonObject = new JSONObject(result.toString());
+                            Device device = new Device();
+                            device.setId(jsonObject.getInt("id"));
+                            device.setName(jsonObject.getString("name"));
+                            device.setImage(jsonObject.getString("image"));
 
-                    InputStream stream = connection.getInputStream();
-                    reader = new BufferedReader(new InputStreamReader(stream));
-                    StringBuffer result = new StringBuffer();
+                            deviceList.add(device);
+                        }
+                    } else {
 
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        result.append(line);
                     }
-                    try {
-                        JSONObject jsonObject = new JSONObject(result.toString());
-                        Device device = new Device();
-                        device.setId(jsonObject.getInt("id"));
-                        device.setName(jsonObject.getString("name"));
-                        device.setImage(jsonObject.getString("image"));
-
-                        deviceList.add(device);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
                 } catch (Exception e) {
                     e.printStackTrace();
-                } finally {
-                    if (connection != null) {
-                        connection.disconnect();
-                    }
-                    try {
-                        if (reader != null) {
-                            reader.close();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                 }
             }
             getActivity().runOnUiThread(new Runnable() {
