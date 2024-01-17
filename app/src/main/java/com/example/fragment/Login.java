@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.handheld_reader.BuildConfig;
+import com.example.handheld_reader.MainActivity;
 import com.example.handheld_reader.R;
 import com.example.model.User;
 import com.example.session.SessionManagement;
@@ -78,11 +79,18 @@ public class Login extends Fragment {
                                     .build();
                             try (Response response2 = client2.newCall(request2).execute()) {
                                 JSONObject jsonObject2 = new JSONObject(response2.body().string());
-                                User user = new User(jsonObject2.getInt("id"), jsonObject2.getString("username"));
+                                int id = jsonObject2.getInt("id");
+                                String username = jsonObject2.getString("username");
+                                String name = jsonObject2.getString("name");
+                                String email = jsonObject2.getString("email");
+                                User user = new User(id, username, name, email);
 
                                 // Save session
                                 SessionManagement sessionManagement = new SessionManagement(getActivity());
                                 sessionManagement.saveSession(user);
+
+                                MainActivity.isloggedIn = true;
+                                MainActivity.updateLoginStatus(getActivity());
 
                                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new Home()).commit();
                             } catch (Exception e) {
@@ -94,6 +102,7 @@ public class Login extends Fragment {
                         }
                     }
                 } catch (Exception e) {
+                    Toast.makeText(getActivity(), R.string.server_error, Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
 

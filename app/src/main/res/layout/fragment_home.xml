@@ -1,19 +1,49 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
     tools:context="com.example.fragment.Home">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Home"
-        android:textSize="50dp"/>
     <Button
-        android:id="@+id/button_home"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"/>
+        android:id="@+id/home_borrow_button"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginHorizontal="50dp"
+        android:layout_marginVertical="10dp"
+        android:background="@drawable/home_choice_button"
+        android:text="@string/borrow"
+        android:textSize="30dp" />
 
-</FrameLayout>
+    <Button
+        android:id="@+id/home_return_button"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginHorizontal="50dp"
+        android:layout_marginVertical="10dp"
+        android:background="@drawable/home_choice_button"
+        android:text="@string/return_page"
+        android:textSize="30dp" />
+
+    <Button
+        android:id="@+id/home_device_list_button"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginHorizontal="50dp"
+        android:layout_marginVertical="10dp"
+        android:background="@drawable/home_choice_button"
+        android:text="@string/device_list"
+        android:textSize="30dp" />
+
+    <Button
+        android:id="@+id/home_find_device_button"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginHorizontal="50dp"
+        android:layout_marginVertical="10dp"
+        android:background="@drawable/home_choice_button"
+        android:text="@string/find_device"
+        android:textSize="30dp" />
+
+</LinearLayout>

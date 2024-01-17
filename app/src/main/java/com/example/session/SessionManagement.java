@@ -5,14 +5,22 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+
 import com.example.fragment.Login;
+import com.example.handheld_reader.MainActivity;
+import com.example.handheld_reader.R;
 import com.example.model.User;
 
 public class SessionManagement {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     String SHARED_PREF_NAME = "session";
-    String SESSION_KEY = "session_user";
+    String SESSION_KEY = "session_user_id";
+    String SESSION_USERNAME = "session_username";
+    String SESSION_NAME = "session_name";
+    String SESSION_EMAIL = "session_email";
     String SESSION_TIME = "session_time";
     private Context context;
 
@@ -26,6 +34,9 @@ public class SessionManagement {
         // save session of user whenever user is logged in
         int id = user.getId();
         editor.putInt(SESSION_KEY, id);
+        editor.putString(SESSION_USERNAME, user.getUsername());
+        editor.putString(SESSION_NAME, user.getName());
+        editor.putString(SESSION_EMAIL, user.getEmail());
         editor.putLong(SESSION_TIME, System.currentTimeMillis());
         editor.commit();
 
@@ -48,6 +59,10 @@ public class SessionManagement {
         if (currentTime - sessionTime > timeout) {
             removeSession();
             Toast.makeText(context, "Session has timed out", Toast.LENGTH_SHORT).show();
+            MainActivity.isloggedIn = false;
+            MainActivity.updateLoginStatus((Activity) context);
+
+            ((FragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new Login()).commit();
         }
 
     }

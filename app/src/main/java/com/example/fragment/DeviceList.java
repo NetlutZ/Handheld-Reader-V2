@@ -194,7 +194,7 @@ public class DeviceList extends Fragment {
                 // cant use response.body().string() twice so use peekBody() instead : https://stackoverflow.com/questions/60671465/retrofit-java-lang-illegalstateexception-closed
                 return response.body().string();
             } catch (Exception e) {
-                Log.d("Response Error : ", e.toString());
+                Toast.makeText(getActivity(), R.string.server_error, Toast.LENGTH_SHORT).show();
                 return null;
             }
 

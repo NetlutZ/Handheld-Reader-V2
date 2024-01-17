@@ -19,7 +19,7 @@ import com.example.handheld_reader.R;
 import com.example.session.SessionManagement;
 
 public class Home extends Fragment {
-    Button button;
+    Button borrowButton, returnButton, deviceListButton, findDeviceButton;
     Activity activity = getActivity();
 
     @Override
@@ -32,23 +32,46 @@ public class Home extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        button = getActivity().findViewById(R.id.button_home);
+        borrowButton = getView().findViewById(R.id.home_borrow_button);
+        returnButton = getView().findViewById(R.id.home_return_button);
+        deviceListButton = getView().findViewById(R.id.home_device_list_button);
+        findDeviceButton = getView().findViewById(R.id.home_find_device_button);
 
-        button.setOnClickListener(new View.OnClickListener() {
+        borrowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logout(v);
+                Bundle bundle = new Bundle();
+                bundle.putString("function", "borrow");
+                RFIDScan rfidScanFragment = new RFIDScan();
+                rfidScanFragment.setArguments(bundle);
+                requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, rfidScanFragment).commit();
             }
         });
-    }
 
-    public void logout(View view) {
-        SessionManagement sessionManagement = new SessionManagement(getActivity());
-        sessionManagement.removeSession();
-        requireActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, new Login())
-                .commit();
+        returnButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("function", "return");
+                RFIDScan rfidScanFragment = new RFIDScan();
+                rfidScanFragment.setArguments(bundle);
+                requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, rfidScanFragment).commit();
+            }
+        });
+
+        deviceListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DeviceList()).commit();
+            }
+        });
+
+        findDeviceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RFIDLocation()).commit();
+            }
+        });
     }
 
     @Override
@@ -56,17 +79,12 @@ public class Home extends Fragment {
         super.onStart();
         Context context = getActivity();
         SharedPreferences pref = context.getSharedPreferences("session", Context.MODE_PRIVATE);
-        int username = pref.getInt("session_user", 0);
+        int username = pref.getInt("session_user_id", 0);
         Log.d("Home", "onStart: " + username);
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        SessionManagement sessionManagement = new SessionManagement(getActivity());
-        sessionManagement.checkSessionTimeout();
-    }
+
 
 
 }

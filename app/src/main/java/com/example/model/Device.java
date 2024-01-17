@@ -33,6 +33,10 @@ public class Device implements Serializable {
 
     }
 
+    public Device(String rfid) {
+        this.rfid = rfid;
+    }
+
     public int getId() {
         return id;
     }

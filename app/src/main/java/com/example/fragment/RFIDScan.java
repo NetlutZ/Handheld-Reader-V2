@@ -3,6 +3,7 @@ package com.example.fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -13,7 +14,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -21,15 +24,22 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
+
+import com.example.handheld_reader.BuildConfig;
 import com.example.handheld_reader.MainActivity;
 import com.example.handheld_reader.R;
 import com.example.model.Device;
 import com.example.model.DeviceGroupName;
+import com.example.session.SessionManagement;
 import com.rscja.deviceapi.RFIDWithUHFUART;
 import com.rscja.deviceapi.entity.UHFTAGInfo;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 public class RFIDScan extends KeyDwonFragment {
     private boolean loopFlag = false;
@@ -61,6 +71,7 @@ public class RFIDScan extends KeyDwonFragment {
     private boolean isMapping = false;
     public MainActivity mContext;
     Activity activity = getActivity();
+    private String function = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,7 +99,7 @@ public class RFIDScan extends KeyDwonFragment {
 
         View test = getView().findViewById(R.id.bottomBar);
         Button cancelButton = (Button) test.findViewById(R.id.btnCancel);
-        cancelButton.setOnClickListener(new Test());
+        cancelButton.setOnClickListener(new ToHome());
 
         /*
         Bundle bundle = activity.getIntent().getExtras();
@@ -102,14 +113,17 @@ public class RFIDScan extends KeyDwonFragment {
         adapter = new SimpleAdapter(getActivity(), tagList, R.layout.listtag_items,
                 new String[]{"tagUii", "tagLen", "tagCount"},
                 new int[]{R.id.TvTagUii, R.id.TvTagLen, R.id.TvTagCount});
+        LvTags.setAdapter(adapter);
 
         BtClear.setOnClickListener(new RFIDScan.BtClearClickListener());
         RgInventory.setOnCheckedChangeListener(new RFIDScan.RgInventoryCheckedListener());
         BtInventory.setOnClickListener(new RFIDScan.BtInventoryClickListener());
 
-        LvTags.setAdapter(adapter);
+//        customAdapter = new CustomAdapter(getActivity().getApplicationContext());
+//        LvTags.setAdapter(customAdapter);
 
         // FOR TEST LOCATION // TODO - DELETE THIS
+        /*
         LvTags.setOnItemClickListener((parent, view, position, id) -> {
             HashMap<String, String> map = (HashMap<String, String>) LvTags.getItemAtPosition(position);
             Device device = new Device(0, "", "", map.get("tagUii"), "", "", "", "", 0, 0, "");
@@ -125,6 +139,7 @@ public class RFIDScan extends KeyDwonFragment {
                     .replace(R.id.fragment_container, fragment)
                     .commit();
         });
+         */
 
 
         clearData();
@@ -142,18 +157,36 @@ public class RFIDScan extends KeyDwonFragment {
             }
         };
 
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            String fnBundle = bundle.getString("function");
+            if (fnBundle != null) {
+                function = fnBundle;
+                Log.d("RFIDScan", "function: " + function);
+            }
+        }
+
 //        fIsEmulator = UIHelper.isEmulator();
 //        UIHelper.initSound(RFIDScan.this);
         initUHF();
     }
 
-    private class Test implements View.OnClickListener {
+    private class ToHome implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            Toast.makeText(getActivity(), "CANCEL", Toast.LENGTH_SHORT).show();
-//            Log.d("CLICK","CANCEL CLICK");
+            mContext.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new Home()).commit();
         }
     }
+
+    /*
+    @Override
+    public void onResume() {
+        super.onResume();
+        SessionManagement sessionManagement = new SessionManagement(getActivity());
+        sessionManagement.checkSessionTimeout();
+    }
+
+     */
 
 
     public void initUHF() {
@@ -394,4 +427,5 @@ public class RFIDScan extends KeyDwonFragment {
             }
         }
     }
+
 }

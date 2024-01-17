@@ -20,6 +20,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.handheld_reader.BuildConfig;
 import com.example.handheld_reader.R;
@@ -119,6 +120,7 @@ public class HistoryDialog extends AppCompatDialogFragment {
 
                     }
                 } catch (Exception e) {
+                    Toast.makeText(getActivity(), R.string.server_error, Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }

@@ -169,7 +169,7 @@ public class History extends Fragment {
                 }
                 return null;
             } catch (Exception e) {
-                Log.e("Error", "SERVER ERROR");
+                Toast.makeText(getActivity(), R.string.server_error, Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
             return null;
