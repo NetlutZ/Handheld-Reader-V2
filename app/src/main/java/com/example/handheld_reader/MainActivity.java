@@ -20,10 +20,12 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.fragment.DeviceList;
+import com.example.fragment.DeviceNotReturn;
 import com.example.fragment.History;
 import com.example.fragment.Home;
 import com.example.fragment.Login;
 import com.example.fragment.RFIDLocation;
+import com.example.fragment.Test;
 import com.example.session.SessionManagement;
 import com.google.android.material.navigation.NavigationView;
 
@@ -105,6 +107,11 @@ public class MainActivity extends BaseTabFragmentActivity implements NavigationV
                     .commit();
         } else if (item.getItemId() == R.id.user_menu_logout) {
             logout(null);
+        }else if(item.getItemId() == R.id.user_menu_your_borrow){
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new DeviceNotReturn())
+                    .commit();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -137,6 +144,7 @@ public class MainActivity extends BaseTabFragmentActivity implements NavigationV
         menu.findItem(R.id.user_menu_account).setVisible(isloggedIn);
         menu.findItem(R.id.user_menu_history).setVisible(isloggedIn);
         menu.findItem(R.id.user_menu_logout).setVisible(isloggedIn);
+        menu.findItem(R.id.user_menu_your_borrow).setVisible(isloggedIn);
     }
 
     public static void updateLoginStatus(Activity activity) {
@@ -172,8 +180,8 @@ public class MainActivity extends BaseTabFragmentActivity implements NavigationV
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new History()).commit();
             getSupportActionBar().setTitle("Settings");
         } else if (item.getItemId() == R.id.nav_test) {
-//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new Login()).commit();
-//            getSupportActionBar().setTitle("Test");
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new Test()).commit();
+            getSupportActionBar().setTitle("Test");
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;

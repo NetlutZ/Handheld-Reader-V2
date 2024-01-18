@@ -35,4 +35,8 @@
     <string name="device_list">Device List</string>
     <string name="find_device">Find Device</string>
 
+    <!-- status -->
+    <string name="Borrowed">Borrowed</string>
+    <string name="InStorage">InStorage</string>
+    <string name="Loss">Loss</string>
 </resources>

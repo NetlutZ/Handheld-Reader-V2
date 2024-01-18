@@ -78,7 +78,7 @@ public class Home extends Fragment {
     public void onStart() {
         super.onStart();
         Context context = getActivity();
-        SharedPreferences pref = context.getSharedPreferences("session", Context.MODE_PRIVATE);
+        SharedPreferences pref = getActivity().getSharedPreferences("session", Context.MODE_PRIVATE);
         int username = pref.getInt("session_user_id", 0);
         Log.d("Home", "onStart: " + username);
 

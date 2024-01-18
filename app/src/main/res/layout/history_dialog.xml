@@ -12,7 +12,8 @@
             android:id="@+id/history_dialog_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Date"/>
+            android:text="Date"
+            android:textColor="@color/black"/>
 
         <ImageView
             android:id="@+id/history_close_button"
@@ -26,13 +27,15 @@
         android:id="@+id/history_dialog_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Time"/>
+        android:text="Time"
+        android:textColor="@color/black"/>
 
     <TextView
         android:id="@+id/history_dialog_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Status"/>
+        android:text="Status"
+        android:textColor="@color/black"/>
 
     <View
         android:layout_width="wrap_content"

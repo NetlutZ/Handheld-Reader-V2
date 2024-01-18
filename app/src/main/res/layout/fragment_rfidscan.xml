@@ -90,7 +90,7 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/tvTagUii"
+            android:text="Total Device"
             android:textStyle="bold"
             android:textSize="15sp" />
 
@@ -118,7 +118,8 @@
             android:gravity="center"
             android:text="@string/tvTagCount"
             android:textStyle="bold"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:visibility="invisible"/>
 
     </LinearLayout>
 
