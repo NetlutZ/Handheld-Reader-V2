@@ -6,14 +6,14 @@ public class DeviceGroupName implements Serializable {
     private int id;
     private String name;
     private int quantity;
-    private int maxBorrowDate;
+    private int maxBorrowDays;
     private String img;
 
-    public DeviceGroupName(int id, String name, int quantity, int maxBorrowDate, String img) {
+    public DeviceGroupName(int id, String name, int quantity, int maxBorrowDays, String img) {
         this.id = id;
         this.name = name;
         this.quantity = quantity;
-        this.maxBorrowDate = maxBorrowDate;
+        this.maxBorrowDays = maxBorrowDays;
         this.img = img;
     }
 
@@ -29,8 +29,8 @@ public class DeviceGroupName implements Serializable {
         return quantity;
     }
 
-    public int getMaxBorrowDate() {
-        return maxBorrowDate;
+    public int getMaxBorrowDays() {
+        return maxBorrowDays;
     }
 
     public void setQuantity(int quantity) {

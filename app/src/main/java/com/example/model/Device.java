@@ -15,12 +15,12 @@ public class Device implements Serializable {
     private String location;
     private int activityId;
     private int userId;
-    private int maxBorrowDate;
+    private int maxBorrowDays;
     private String image;
     private String returnDate;
 
 
-    public Device(int id, String name, String serialNumber, String rfid, String rfidStatus, String purchaseDate, String warrantyExpirationDate, String location, int activityId, int userId, int maxBorrowDate, String image, String returnDate) {
+    public Device(int id, String name, String serialNumber, String rfid, String rfidStatus, String purchaseDate, String warrantyExpirationDate, String location, int activityId, int userId, int maxBorrowDays, String image, String returnDate) {
         this.id = id;
         this.name = name;
         this.serialNumber = serialNumber;
@@ -31,7 +31,7 @@ public class Device implements Serializable {
         this.location = location;
         this.activityId = activityId;
         this.userId = userId;
-        this.maxBorrowDate = 1;
+        this.maxBorrowDays = 1;
         this.image = image;
         this.returnDate = returnDate;
     }
@@ -94,8 +94,8 @@ public class Device implements Serializable {
         return activityId;
     }
 
-    public int getMaxBorrowDate() {
-        return maxBorrowDate;
+    public int getMaxBorrowDays() {
+        return maxBorrowDays;
     }
 
     public int getUserId() {
@@ -120,8 +120,26 @@ public class Device implements Serializable {
         return tmpRtDate;
     }
 
+    public String getReturnDateISO() {
+        SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        SimpleDateFormat outputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String tmpRtDate = "";
+        if (this.returnDate != null){
+            try {
+                tmpRtDate = outputDateFormat.format(inputDateFormat.parse(this.returnDate));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return tmpRtDate;
+    }
+
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setReturnDate(String returnDate) {
+        this.returnDate = returnDate;
     }
 
     public void setName(String name) {
@@ -132,8 +150,8 @@ public class Device implements Serializable {
         this.image = image;
     }
 
-    public void setMaxBorrowDate(int maxBorrowDate) {
-        this.maxBorrowDate = maxBorrowDate;
+    public void setMaxBorrowDays(int maxBorrowDays) {
+        this.maxBorrowDays = maxBorrowDays;
     }
 
     public void setRfidStatus(String rfidStatus) {

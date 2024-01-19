@@ -1,5 +1,6 @@
 package com.example.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.example.handheld_reader.R;
 import com.example.model.Device;
 import com.example.model.DeviceGroupName;
 import com.example.model.HistoryItem;
+import com.example.session.SessionManagement;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -53,7 +55,9 @@ public class History extends Fragment {
     CustomListAdapter customListAdapter;
     ListView listView;
     String URL = BuildConfig.BASE_URL;
-
+    private Activity activity = getActivity();
+    private String SHARED_PREF_NAME = "session";
+    private String SESSION_KEY = "session_user_id";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -91,14 +95,17 @@ public class History extends Fragment {
     public class GetHistoryData extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
+            SessionManagement sessionManagement = new SessionManagement(getActivity());
+            int userId = sessionManagement.getSession();
+
+            // Get Activity of User
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
-                    .url(URL + "/activity")
+                    .url(URL + "/activity/user/" + userId)
                     .get()
                     .build();
             List<HistoryItem> historyItemList = new ArrayList<>();
             try (Response response = client.newCall(request).execute()) {
-                // Get Activity of User // TODO Change from all to user
                 String result = null;
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
@@ -108,10 +115,13 @@ public class History extends Fragment {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
 
+                            if(jsonObject.isNull("activityDate") || jsonObject.isNull("activityTime")){
+                                continue;
+                            }
                             String activityCode = jsonObject.getString("activityCode");
                             String activityDate = jsonObject.getString("activityDate");
                             String activityTime = jsonObject.getString("activityTime");
-                            int userId = jsonObject.isNull("userId") ? 0 : jsonObject.getInt("userId");
+//                            int userId = jsonObject.isNull("userId") ? 0 : jsonObject.getInt("userId");
                             String device = jsonObject.getString("device");
 
                             // Change date format
@@ -137,8 +147,7 @@ public class History extends Fragment {
                                     if (response2.isSuccessful()) {
                                         if (response2.body() != null) {
                                             result2 = response2.body().string();
-
-                                            JSONObject jsonObject2 = new JSONObject(result2.toString());
+                                            JSONObject jsonObject2 = new JSONObject(result2);
                                             String deviceName = jsonObject2.getString("name");
                                             if (deviceDetail.containsKey(deviceName)) {
                                                 deviceDetail.put(deviceName, deviceDetail.get(deviceName) + 1);
@@ -169,7 +178,7 @@ public class History extends Fragment {
                 }
                 return null;
             } catch (Exception e) {
-                Toast.makeText(getActivity(), R.string.server_error, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), R.string.server_error, Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
             return null;

@@ -54,7 +54,7 @@ public class SessionManagement {
     public void checkSessionTimeout() {
         long sessionTime = sharedPreferences.getLong(SESSION_TIME, 0);
         long currentTime = System.currentTimeMillis();
-        long timeout = 1000 * 20;
+        long timeout = 1000 * 60 * 60;
 
         if (currentTime - sessionTime > timeout) {
             removeSession();

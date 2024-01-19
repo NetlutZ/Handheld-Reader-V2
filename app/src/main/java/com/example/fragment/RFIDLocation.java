@@ -49,7 +49,7 @@ public class RFIDLocation extends Fragment {
     private Button btStart, btStop;
     private PlaySoundThread playSoundThread;
     private View includeView;
-    TextView deviceName, deviceTag;
+    TextView deviceName, deviceTag, quantity, quantityConst;
     Activity activity = getActivity();
     Device[] devices;
     private String name;
@@ -78,6 +78,11 @@ public class RFIDLocation extends Fragment {
 
         deviceName = includeView.findViewById(R.id.DeviceName);
         deviceTag = includeView.findViewById(R.id.TvTagUii);
+
+        getView().findViewById(R.id.QuantityDevice).setVisibility(View.GONE);
+        getView().findViewById(R.id.quantity_const).setVisibility(View.GONE);
+        getView().findViewById(R.id.picker_date).setVisibility(View.GONE);
+        getView().findViewById(R.id.line4).setVisibility(View.GONE);
 
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -113,6 +118,7 @@ public class RFIDLocation extends Fragment {
             Log.e("initUHF Error", ex.toString());
             return;
         }
+
     }
 
     public class GetDevice extends AsyncTask<String, Void, String> {

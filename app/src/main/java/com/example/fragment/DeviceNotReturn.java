@@ -16,6 +16,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -184,8 +185,9 @@ public class DeviceNotReturn extends Fragment {
         }
 
         private class ViewHolder {
-            TextView name, tag, quantity, returnDate;
+            TextView name, tag, quantity, maxBorrowDate, returnDate, rfidConst, quantityConst, MaxBorrowDate_const, MaxBorrowDate_const2;
             ImageView img, deleteButton;
+            NumberPicker datePicker;
         }
 
         @Override
@@ -218,7 +220,15 @@ public class DeviceNotReturn extends Fragment {
                 holder.quantity = convertView.findViewById(R.id.QuantityDevice);
                 holder.quantity.setVisibility(View.GONE);
                 holder.img = convertView.findViewById(R.id.DeviceImage);
-                holder.returnDate = convertView.findViewById(R.id.MaxBorrowDate);
+                holder.maxBorrowDate = convertView.findViewById(R.id.MaxBorrowDate);
+                holder.rfidConst = convertView.findViewById(R.id.rfid_const);
+                holder.quantityConst = convertView.findViewById(R.id.quantity_const);
+                holder.quantityConst.setVisibility(View.GONE);
+                holder.MaxBorrowDate_const = convertView.findViewById(R.id.MaxBorrowDate_const);
+                holder.MaxBorrowDate_const2 = convertView.findViewById(R.id.MaxBorrowDate_const2);
+                holder.datePicker = convertView.findViewById(R.id.picker_date);
+                holder.datePicker.setVisibility(View.GONE);
+                holder.returnDate = convertView.findViewById(R.id.return_date);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -230,6 +240,7 @@ public class DeviceNotReturn extends Fragment {
             holder.quantity.setVisibility(View.GONE);
             holder.name.setText(device.getName());
             holder.tag.setText(device.getRfid());
+            holder.maxBorrowDate.setText(String.valueOf(device.getMaxBorrowDays()));
             holder.returnDate.setText(device.getReturnDate());
 
             return convertView;

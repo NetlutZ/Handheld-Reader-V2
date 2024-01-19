@@ -18,7 +18,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -148,9 +150,9 @@ public class DeviceList extends Fragment {
                 }
                 if (!isExist) {
                     if (device.getRfidStatus().equals("InStorage")) {
-                        contentList.add(new DeviceGroupName(device.getId(), device.getName(), 1, 2, device.getImg()));
+                        contentList.add(new DeviceGroupName(device.getId(), device.getName(), 1, device.getMaxBorrowDays(), device.getImg()));
                     } else {
-                        contentList.add(new DeviceGroupName(device.getId(), device.getName(), 0, 2, device.getImg()));
+                        contentList.add(new DeviceGroupName(device.getId(), device.getName(), 0, device.getMaxBorrowDays(), device.getImg()));
                     }
                 }
             }
@@ -285,6 +287,14 @@ public class DeviceList extends Fragment {
                 holder.quantity = convertView.findViewById(R.id.QuantityDevice);
                 holder.img = convertView.findViewById(R.id.DeviceImage);
                 holder.maxBorrowDate = convertView.findViewById(R.id.MaxBorrowDate);
+                holder.rfidConst = convertView.findViewById(R.id.rfid_const);
+                holder.quantityConst = convertView.findViewById(R.id.quantity_const);
+                holder.line4 = convertView.findViewById(R.id.line4);
+                holder.line4.setVisibility(View.GONE);
+                holder.MaxBorrowDate_const = convertView.findViewById(R.id.MaxBorrowDate_const);
+                holder.MaxBorrowDate_const2 = convertView.findViewById(R.id.MaxBorrowDate_const2);
+                holder.datePicker = convertView.findViewById(R.id.picker_date);
+                holder.datePicker.setVisibility(View.GONE);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -292,39 +302,49 @@ public class DeviceList extends Fragment {
 
             if (radioGroup.getCheckedRadioButtonId() == R.id.name_selected) {
                 holder.quantity.setVisibility(View.VISIBLE);
+                holder.quantityConst.setVisibility(View.VISIBLE);
                 holder.tag.setVisibility(View.INVISIBLE);
+                holder.rfidConst.setVisibility(View.INVISIBLE);
 
                 DeviceGroupName deviceGroupName = getGroupItem(position);
                 String imgUrl = BuildConfig.BASE_URL + "/device" + "/image/" + deviceGroupName.getImg();
                 holder.name.setText(deviceGroupName.getName());
                 holder.quantity.setText(String.valueOf(deviceGroupName.getQuantity()));
                 Picasso.get().load(imgUrl).into(holder.img);
-                holder.maxBorrowDate.setText(String.valueOf(deviceGroupName.getMaxBorrowDate()));
+                holder.maxBorrowDate.setText(String.valueOf(deviceGroupName.getMaxBorrowDays()));
 
                 // if no device in storage, set color to transparent
                 if (deviceGroupName.getQuantity() == 0) {
                     holder.name.setTextColor(ContextCompat.getColor(mContext, R.color.transparent));
                     holder.quantity.setTextColor(ContextCompat.getColor(mContext, R.color.transparent));
+                    holder.quantityConst.setTextColor(ContextCompat.getColor(mContext, R.color.transparent));
                     holder.img.setAlpha(0.35f);
                     holder.maxBorrowDate.setTextColor(ContextCompat.getColor(mContext, R.color.transparent));
+                    holder.MaxBorrowDate_const.setTextColor(ContextCompat.getColor(mContext, R.color.transparent));
+                    holder.MaxBorrowDate_const2.setTextColor(ContextCompat.getColor(mContext, R.color.transparent));
                 }
             } else if (radioGroup.getCheckedRadioButtonId() == R.id.tag_selected) {
                 holder.quantity.setVisibility(View.INVISIBLE);
+                holder.quantityConst.setVisibility(View.INVISIBLE);
                 holder.tag.setVisibility(View.VISIBLE);
+                holder.rfidConst.setVisibility(View.VISIBLE);
 
                 Device device = getItem(position);
                 String imgUrl = BuildConfig.BASE_URL + "/device" + "/image/" + device.getImg();
                 holder.name.setText(device.getName());
                 holder.tag.setText(device.getRfid());
                 Picasso.get().load(imgUrl).into(holder.img);
-                holder.maxBorrowDate.setText(String.valueOf(device.getMaxBorrowDate()));
+                holder.maxBorrowDate.setText(String.valueOf(device.getMaxBorrowDays()));
 
                 // if no device in storage, set color to transparent
                 if (!Objects.equals(device.getRfidStatus(), "InStorage")) {
                     holder.name.setTextColor(ContextCompat.getColor(mContext, R.color.transparent));
                     holder.tag.setTextColor(ContextCompat.getColor(mContext, R.color.transparent));
+                    holder.rfidConst.setTextColor(ContextCompat.getColor(mContext, R.color.transparent));
                     holder.img.setAlpha(0.35f);
                     holder.maxBorrowDate.setTextColor(ContextCompat.getColor(mContext, R.color.transparent));
+                    holder.MaxBorrowDate_const.setTextColor(ContextCompat.getColor(mContext, R.color.transparent));
+                    holder.MaxBorrowDate_const2.setTextColor(ContextCompat.getColor(mContext, R.color.transparent));
                 }
             }
 
@@ -367,10 +387,9 @@ public class DeviceList extends Fragment {
     }
 
     public class ViewHolder {
-        TextView name;
-        TextView tag;
-        TextView quantity;
+        TextView name, tag, quantity, maxBorrowDate, rfidConst, quantityConst, MaxBorrowDate_const, MaxBorrowDate_const2;
         ImageView img;
-        TextView maxBorrowDate;
+        LinearLayout line3, line4;
+        NumberPicker datePicker;
     }
 }
