@@ -42,4 +42,11 @@
 
     <string name="navigation_drawer_open">Open Navigation Drawer</string>
     <string name="navigation_drawer_close">Close Navigation Drawer</string>
+
+    <!-- Settings -->
+    <string name="normal_set">Common settings</string>
+    <string name="uhf_title_power">Output Power：</string>
+    <string name="uhf_btn_setpower">Set Power</string>
+    <string name="uhf_btn_getpower">Get Power</string>
+    <string name="uhf_title_dbm">dBm</string>
 </resources>
