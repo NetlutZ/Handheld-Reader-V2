@@ -10,10 +10,11 @@
 
         <TextView
             android:id="@+id/device_name"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="Device"
-            android:layout_marginLeft="20dp"/>
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/black"/>
 
         <TextView
             android:id="@+id/device_quantity"
@@ -21,7 +22,8 @@
             android:layout_height="wrap_content"
             android:text="Quantity"
             android:layout_toRightOf="@+id/device_name"
-            android:layout_marginStart="150dp"/>
+            android:layout_marginStart="30dp"
+            android:textColor="@color/black"/>
     </RelativeLayout>
 
 </LinearLayout>

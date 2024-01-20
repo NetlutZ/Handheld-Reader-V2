@@ -27,6 +27,7 @@ import com.example.handheld_reader.R;
 import com.example.model.Device;
 import com.example.model.DeviceGroupName;
 import com.example.model.HistoryItem;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -110,9 +111,8 @@ public class HistoryDialog extends AppCompatDialogFragment {
                             result = response.body().string();
                             JSONObject jsonObject = new JSONObject(result.toString());
                             Device device = new Device();
-                            device.setId(jsonObject.getInt("id"));
-                            device.setName(jsonObject.getString("name"));
-                            device.setImage(jsonObject.getString("image"));
+                            Gson gson = new Gson();
+                            device = gson.fromJson(jsonObject.toString(), Device.class);
 
                             deviceList.add(device);
                         }
@@ -193,7 +193,7 @@ public class HistoryDialog extends AppCompatDialogFragment {
             }
             Device device = deviceList.get(position);
             viewHolder.deviceNameView.setText(device.getName());
-            viewHolder.deviceIdView.setText(String.valueOf(device.getId()));
+            viewHolder.deviceIdView.setText(device.getRfid());
             Picasso.get().load(URL + "/device" + "/image/" + device.getImg()).into(viewHolder.deviceImage);
             return convertView;
         }

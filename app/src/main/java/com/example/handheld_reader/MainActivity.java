@@ -25,6 +25,7 @@ import com.example.fragment.History;
 import com.example.fragment.Home;
 import com.example.fragment.Login;
 import com.example.fragment.RFIDLocation;
+import com.example.fragment.Settings;
 import com.example.fragment.Test;
 import com.example.session.SessionManagement;
 import com.google.android.material.navigation.NavigationView;
@@ -169,19 +170,19 @@ public class MainActivity extends BaseTabFragmentActivity implements NavigationV
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.nav_home) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new Home()).commit();
-            getSupportActionBar().setTitle("Home");
+            // getSupportActionBar().setTitle("Home");
         } else if (item.getItemId() == R.id.nav_location) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RFIDLocation()).commit();
-            getSupportActionBar().setTitle("Location");
+            // getSupportActionBar().setTitle("Location");
         } else if (item.getItemId() == R.id.nav_devicelist) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DeviceList()).commit();
-            getSupportActionBar().setTitle("Device List");
+            // getSupportActionBar().setTitle("Device List");
         } else if (item.getItemId() == R.id.nav_settings) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new History()).commit();
-            getSupportActionBar().setTitle("Settings");
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new Settings()).commit();
+            // getSupportActionBar().setTitle("Settings");
         } else if (item.getItemId() == R.id.nav_test) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new Test()).commit();
-            getSupportActionBar().setTitle("Test");
+            // getSupportActionBar().setTitle("Test");
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;

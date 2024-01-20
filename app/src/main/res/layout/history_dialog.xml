@@ -4,9 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp">
 
         <TextView
             android:id="@+id/history_dialog_date"
@@ -20,22 +22,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_cancel"
-            android:layout_alignParentRight="true"/>
-    </RelativeLayout>
+            android:layout_alignParentRight="true"
+            android:visibility="gone"/>
 
-    <TextView
-        android:id="@+id/history_dialog_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Time"
-        android:textColor="@color/black"/>
+        <TextView
+            android:id="@+id/history_dialog_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time"
+            android:textColor="@color/black"/>
 
-    <TextView
-        android:id="@+id/history_dialog_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Status"
-        android:textColor="@color/black"/>
+        <TextView
+            android:id="@+id/history_dialog_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Status"
+            android:textColor="@color/black"/>
+    </LinearLayout>
 
     <View
         android:layout_width="wrap_content"

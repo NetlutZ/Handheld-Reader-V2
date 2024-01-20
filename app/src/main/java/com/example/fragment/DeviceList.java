@@ -7,8 +7,12 @@ import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
@@ -29,6 +33,7 @@ import com.example.handheld_reader.BuildConfig;
 import com.example.handheld_reader.R;
 import com.example.model.Device;
 import com.example.model.DeviceGroupName;
+import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import com.rscja.deviceapi.RFIDWithUHFUART;
 import com.squareup.picasso.Picasso;
@@ -60,6 +65,27 @@ public class DeviceList extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        // Set title bar
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        if (getActivity() != null) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        }
+
+        if (getActivity() != null && ((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Device List");
+        }
+        DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
+                getActivity(),
+                drawerLayout,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
+        );
+
+        // Synchronize the state of the drawer toggle with the DrawerLayout
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
 
         radioGroup = getActivity().findViewById(R.id.device_option);
         radioGroup.setOnCheckedChangeListener(new DeviceOption());

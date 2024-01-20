@@ -6,6 +6,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -56,6 +60,23 @@ public class DeviceNotReturn extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        if (getActivity() != null) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        }
+
+        if (getActivity() != null && ((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Your Devices Borrowed");
+        }
+        DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
+                getActivity(),
+                drawerLayout,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
+        );
 
         View test = getView().findViewById(R.id.bottomBar);
         cancelButton = (Button) test.findViewById(R.id.btnCancel);

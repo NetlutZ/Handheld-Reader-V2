@@ -5,6 +5,10 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -36,6 +40,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -45,6 +50,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -68,6 +74,23 @@ public class History extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        if (getActivity() != null) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        }
+
+        if (getActivity() != null && ((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("History");
+        }
+        DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
+                getActivity(),
+                drawerLayout,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
+        );
 
         listView = (ListView) getActivity().findViewById(R.id.history_item);
         customListAdapter = new CustomListAdapter(getActivity().getApplicationContext());
@@ -166,6 +189,48 @@ public class History extends Fragment {
                             HistoryItem historyItem = new HistoryItem(activityCode, activityDate, activityTime, userId, device, deviceDetail);
                             historyItemList.add(historyItem);
                         }
+
+                        // Sort History by date and time from newest to oldest
+                        for (int i = 0; i < historyItemList.size(); i++) {
+                            for (int j = i + 1; j < historyItemList.size(); j++) {
+                                SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                                SimpleDateFormat outputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                                String rtDate = "";
+                                if (!Objects.equals(historyItemList.get(i).getActivityDate(), "") && !Objects.equals(historyItemList.get(j).getActivityDate(), "")) {
+
+                                    try {
+                                        rtDate = outputDateFormat.format(inputDateFormat.parse(historyItemList.get(i).getActivityDate()));
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    LocalDate date = LocalDate.parse(rtDate);
+                                    String rtDate2 = "";
+                                    try {
+                                        rtDate2 = outputDateFormat.format(inputDateFormat.parse(historyItemList.get(j).getActivityDate()));
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    LocalDate date2 = LocalDate.parse(rtDate2);
+                                    if (date.isBefore(date2)) {
+                                        HistoryItem temp = historyItemList.get(i);
+                                        historyItemList.set(i, historyItemList.get(j));
+                                        historyItemList.set(j, temp);
+                                    } else if (date.isEqual(date2)) {
+                                        String time1 = historyItemList.get(i).getActivityTime();
+                                        String time2 = historyItemList.get(j).getActivityTime();
+                                        LocalTime localTime1 = LocalTime.parse(time1);
+                                        LocalTime localTime2 = LocalTime.parse(time2);
+                                        if (localTime1.isBefore(localTime2)) {
+                                            HistoryItem temp = historyItemList.get(i);
+                                            historyItemList.set(i, historyItemList.get(j));
+                                            historyItemList.set(j, temp);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -231,6 +296,7 @@ public class History extends Fragment {
                 holder1 = new ViewHolder1();
                 holder1.date = (TextView) convertView.findViewById(R.id.history_date);
                 holder1.time = (TextView) convertView.findViewById(R.id.history_time);
+                holder1.statusCode = (TextView) convertView.findViewById(R.id.history_status_code);
                 holder1.status = (TextView) convertView.findViewById(R.id.history_status);
                 holder1.detail = (ListView) convertView.findViewById(R.id.history_item_detail);
                 convertView.setTag(holder1);
@@ -241,7 +307,16 @@ public class History extends Fragment {
             HistoryItem currentItem = getItem(position);
             holder1.date.setText(currentItem.getActivityDate().toString());
             holder1.time.setText(currentItem.getActivityTime().toString());
-            holder1.status.setText(currentItem.getActivityCode());
+            holder1.statusCode.setText("[" + currentItem.getActivityCode() + "]");
+            if (currentItem.getActivityCode().charAt(0) == 'B') {
+                holder1.status.setText("Borrow ");
+                holder1.status.setTextColor(getResources().getColor(R.color.orange1));
+                holder1.statusCode.setTextColor(getResources().getColor(R.color.orange1));
+            } else if(currentItem.getActivityCode().charAt(0) == 'R'){
+                holder1.status.setText("Return ");
+                holder1.status.setTextColor(getResources().getColor(R.color.green1));
+                holder1.statusCode.setTextColor(getResources().getColor(R.color.green1));
+            }
 
 //            holder1.detail.setDivider(null);
             holder1.detail.setDividerHeight(0);
@@ -257,7 +332,7 @@ public class History extends Fragment {
     public class ViewHolder1 {
         TextView date;
         TextView time;
-        TextView status;
+        TextView statusCode, status;
         ListView detail;
     }
 

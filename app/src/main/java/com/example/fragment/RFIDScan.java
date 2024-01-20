@@ -24,6 +24,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.example.handheld_reader.BuildConfig;
 import com.example.handheld_reader.MainActivity;
 import com.example.handheld_reader.R;
@@ -84,6 +89,7 @@ public class RFIDScan extends KeyDwonFragment {
     private Button cancelButton, confirmButton;
     private String SHARED_PREF_NAME = "session";
     private String SESSION_KEY = "session_user_id";
+    private String SESSION_USERNAME = "session_username";
     private String URL = BuildConfig.BASE_URL;
     private LocalDate dateNow = LocalDate.now();
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -103,6 +109,23 @@ public class RFIDScan extends KeyDwonFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        if (getActivity() != null) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        }
+
+        if (getActivity() != null && ((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Scan Device");
+        }
+        DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
+                getActivity(),
+                drawerLayout,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
+        );
 
         mContext = (MainActivity) getActivity();
         mContext.currentFragment = this;
@@ -191,7 +214,7 @@ public class RFIDScan extends KeyDwonFragment {
         // tmpData();
     }
 
-    public static void sendEmail(final String username, final String password, String recipientEmail, String subject, String body) {
+    public static void sendEmail(final String username, final String password, String recipientEmail, String subject, String body, String titleBody) {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -212,12 +235,13 @@ public class RFIDScan extends KeyDwonFragment {
             message.setSubject(subject);
 
             String htmlContent = "<html><body>"
-                    + "<h2>Table with Name and Serial Number</h2>"
+                    + titleBody
                     + "<table border=\"1\">"
                     + "<thead><tr><th>Name</th><th>Serial Number</th></tr></thead>"
                     + "<tbody>"
-                    + "<tr><td>John Doe</td><td>123456</td></tr>"
-                    + "<tr><td>Jane Smith</td><td>789012</td></tr>"
+//                    + "<tr><td>John Doe</td><td>123456</td></tr>"
+//                    + "<tr><td>Jane Smith</td><td>789012</td></tr>"
+                    + body
                     + "</tbody></table>"
                     + "</body></html>";
             message.setContent(htmlContent, "text/html");
@@ -321,12 +345,14 @@ public class RFIDScan extends KeyDwonFragment {
             }
             SharedPreferences pref = getActivity().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
             int userId = pref.getInt(SESSION_KEY, 0);
-
+            String mailData = "";
+            String mailTitleData = "";
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
             LocalDateTime now = LocalDateTime.now();
             String currentDateTime = dtf.format(now);
 
             if (function.equals("borrow")) {
+                mailTitleData = "<h2>" + pref.getString(SESSION_USERNAME, "") + " " + function + " device" + "</h2>";
                 for (int i = 0; i < customAdapter.getCount(); i++) {
                     Device device = customAdapter.getItem(i);
                     if (device.getRfidStatus() != null) {
@@ -403,6 +429,7 @@ public class RFIDScan extends KeyDwonFragment {
                                     // Update device rfidStatus to Borrowed, userId and activityId
                                     for (int i = 0; i < listDeviceId.size(); i++) {
                                         Device device = customAdapter.getItem(i);
+                                        mailData += "<tr><td>" + device.getName() + "</td><td>" + device.getSerialNumber() + "</td></tr>";
                                         OkHttpClient client3 = new OkHttpClient();
                                         RequestBody formBody3 = new FormBody.Builder()
                                                 .add("rfidStatus", getString(R.string.Borrowed))
@@ -431,8 +458,8 @@ public class RFIDScan extends KeyDwonFragment {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    sendEmail(from, "wiesttkduequzyqk", to, "Test", mailData, mailTitleData);
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SuccessFunction()).commit();
-
                 }
             } else if (function.equals("return")) {
                 for (int i = 0; i < customAdapter.getCount(); i++) {
