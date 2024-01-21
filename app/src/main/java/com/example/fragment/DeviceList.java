@@ -24,7 +24,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.NumberPicker;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +35,7 @@ import com.example.model.DeviceGroupName;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import com.rscja.deviceapi.RFIDWithUHFUART;
+import com.shawnlin.numberpicker.NumberPicker;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

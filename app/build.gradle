@@ -25,7 +25,8 @@ android {
     }
 
     buildTypes {
-        def url = "http://10.0.2.2:8080"
+        // def url = "http://10.0.2.2:8080"
+        def url = "http://192.168.1.39:8080"
         debug {
             buildConfigField "String", 'BASE_URL', "\"${url}\""
         }
@@ -38,6 +39,7 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+        coreLibraryDesugaringEnabled true
     }
 }
 
@@ -56,4 +58,6 @@ dependencies {
 //    implementation group: 'javax.mail', name: 'mail', version: '1.4.1'
     implementation 'com.sun.mail:android-mail:1.6.5'
     implementation 'com.sun.mail:android-activation:1.6.5'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+    implementation 'io.github.ShawnLin013:number-picker:2.4.13'
 }

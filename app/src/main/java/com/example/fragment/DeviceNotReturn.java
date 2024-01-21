@@ -20,7 +20,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +29,7 @@ import com.example.model.Device;
 import com.example.session.SessionManagement;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.shawnlin.numberpicker.NumberPicker;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -118,7 +118,12 @@ public class DeviceNotReturn extends Fragment {
 
                 return myResponse;
             } catch (Exception e) {
-                Toast.makeText(getActivity(), R.string.server_error, Toast.LENGTH_SHORT).show();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getActivity(), R.string.server_error, Toast.LENGTH_SHORT).show();
+                    }
+                });
                 return null;
             }
 

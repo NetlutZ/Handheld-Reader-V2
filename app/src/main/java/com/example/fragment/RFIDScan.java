@@ -18,7 +18,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -38,10 +37,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.rscja.deviceapi.RFIDWithUHFUART;
 import com.rscja.deviceapi.entity.UHFTAGInfo;
+import com.shawnlin.numberpicker.NumberPicker;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -209,9 +212,9 @@ public class RFIDScan extends KeyDwonFragment {
         initUHF();
 
         //TODO - DELETE THIS
-        GetTmpDevice getTmpDevice = new GetTmpDevice();
-        getTmpDevice.execute();
-        // tmpData();
+        //GetTmpDevice getTmpDevice = new GetTmpDevice();
+        //getTmpDevice.execute();
+        //tmpData();
     }
 
     public static void sendEmail(final String username, final String password, String recipientEmail, String subject, String body, String titleBody) {
@@ -286,9 +289,9 @@ public class RFIDScan extends KeyDwonFragment {
                 String myResponse = response.body().string();
                 JsonArray jsonArray = new Gson().fromJson(myResponse, JsonArray.class);
 
-                for(int i=0;i<jsonArray.size();i++){
+                for (int i = 0; i < jsonArray.size(); i++) {
                     // if returnDate = null, set returnDate = today
-                    if(jsonArray.get(i).getAsJsonObject().get("returnDate").toString().equals("null")){
+                    if (jsonArray.get(i).getAsJsonObject().get("returnDate").toString().equals("null")) {
                         jsonArray.get(i).getAsJsonObject().addProperty("returnDate", dateTimeNow.toString());
                     }
                 }
@@ -668,6 +671,46 @@ public class RFIDScan extends KeyDwonFragment {
             int index = checkIsExist(epc);
             // 1 query epc
             Device device;
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                    .url(URL + "/device" + "?rfid=" + epc)
+                    .get()
+                    .build();
+            try (Response response = client.newCall(request).execute()) {
+                String jsonResponse = response.body().string().replaceAll("\\},\\{", "},\n{");
+                // System.out.println("Response: \n" + jsonResponse);
+
+                if (jsonResponse.equals("[]")) {
+
+                } else {
+                    JSONArray jsonArray = new JSONArray(jsonResponse);
+
+                    for (int i = 0; i < jsonArray.length(); i++) {      // for duplicate rfid tag
+                        JSONObject obj = jsonArray.getJSONObject(i);
+                        Gson gson = new Gson();
+                        device = gson.fromJson(obj.toString(), Device.class);
+                        if (index == -1) {
+                            customAdapter.addData(device);
+                            tv_count.setText("" + customAdapter.getCount());
+                        } else {
+                            device = customAdapter.getItem(index);
+                            customAdapter.notifyDataSetChanged();
+                        }
+
+                        if (index >= 0)
+                            return false;
+                    }
+
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
+            // TODO - DELETE THIS
+            /*
             if (customAdapter.getCount() % 2 == 0) {
                 device = new Device(0, "AA", "", epc, getString(R.string.Borrowed), "", "", "", 0, 0, 0, "", "");
             } else {
@@ -684,6 +727,8 @@ public class RFIDScan extends KeyDwonFragment {
 
             if (index >= 0)
                 return false;
+
+             */
 
             return true;
         }
