@@ -2,19 +2,8 @@ package com.example.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,17 +17,24 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+
 import com.example.handheld_reader.BuildConfig;
 import com.example.handheld_reader.R;
 import com.example.model.Device;
 import com.example.model.DeviceGroupName;
-import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
-import com.rscja.deviceapi.RFIDWithUHFUART;
 import com.shawnlin.numberpicker.NumberPicker;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,7 +43,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class DeviceList extends Fragment {
+public class DeviceList extends Fragment{
     Activity activity = getActivity();
     RadioGroup radioGroup;
     SearchView searchView;
@@ -165,22 +161,26 @@ public class DeviceList extends Fragment {
         for (Device device : devices) {
             // Group device by name and set quantity
             boolean isExist = false;
-            if (device.getRfidStatus() != null && device.getName() != null) {
-                for (DeviceGroupName deviceGroupName : contentList) {
-                    if (device.getName().equals(deviceGroupName.getName())) {
+            for (DeviceGroupName deviceGroupName : contentList) {
+                if (Objects.equals(device.getName(), deviceGroupName.getName())) {
+                    if (device.getRfidStatus() != null) {
                         if (device.getRfidStatus().equals("InStorage")) {
                             deviceGroupName.setQuantity(deviceGroupName.getQuantity() + 1);
                         }
-                        isExist = true;
                     }
+                    isExist = true;
+                    break;
                 }
-                if (!isExist) {
-                    if (device.getRfidStatus().equals("InStorage")) {
-                        contentList.add(new DeviceGroupName(device.getId(), device.getName(), 1, device.getMaxBorrowDays(), device.getImg()));
-                    } else {
-                        contentList.add(new DeviceGroupName(device.getId(), device.getName(), 0, device.getMaxBorrowDays(), device.getImg()));
-                    }
+            }
+            if (!isExist) {
+                if (device.getRfidStatus() == null) {
+                    contentList.add(new DeviceGroupName(device.getId(), device.getName(), 0, device.getMaxBorrowDays(), device.getImg()));
+                } else if (device.getRfidStatus().equals("InStorage")) {
+                    contentList.add(new DeviceGroupName(device.getId(), device.getName(), 1, device.getMaxBorrowDays(), device.getImg()));
+                } else {
+                    contentList.add(new DeviceGroupName(device.getId(), device.getName(), 0, device.getMaxBorrowDays(), device.getImg()));
                 }
+
             }
         }
         customAdapter.setGroupData(contentList);
@@ -193,7 +193,6 @@ public class DeviceList extends Fragment {
             searchView.clearFocus();
 
             if (checkedId == R.id.name_selected) {
-                Toast.makeText(getActivity(), "name option", Toast.LENGTH_SHORT).show();
                 GroupDevice();
             } else if (checkedId == R.id.tag_selected) {
                 List<Device> contentList = new ArrayList<>();
@@ -201,7 +200,6 @@ public class DeviceList extends Fragment {
                     contentList.add(device);
                 }
                 customAdapter.setData(contentList);
-                Toast.makeText(getActivity(), "tag option", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -218,7 +216,7 @@ public class DeviceList extends Fragment {
                         .build();
 
                 Response response = client.newCall(request).execute();
-                Log.d("Response Success : ", response.peekBody(2048).string());
+                // Log.d("Response Success : ", response.peekBody(2048).string());
                 // cant use response.body().string() twice so use peekBody() instead : https://stackoverflow.com/questions/60671465/retrofit-java-lang-illegalstateexception-closed
                 return response.body().string();
             } catch (Exception e) {
@@ -236,6 +234,7 @@ public class DeviceList extends Fragment {
             } else {
                 Gson gson = new Gson();
                 devices = gson.fromJson(s, Device[].class);
+                Arrays.sort(devices);
                 GroupDevice();
             }
         }
@@ -348,6 +347,14 @@ public class DeviceList extends Fragment {
                     holder.maxBorrowDate.setTextColor(ContextCompat.getColor(mContext, R.color.transparent));
                     holder.MaxBorrowDate_const.setTextColor(ContextCompat.getColor(mContext, R.color.transparent));
                     holder.MaxBorrowDate_const2.setTextColor(ContextCompat.getColor(mContext, R.color.transparent));
+                } else if (deviceGroupName.getQuantity() > 0) {
+                    holder.name.setTextColor(ContextCompat.getColor(mContext, R.color.black));
+                    holder.quantity.setTextColor(ContextCompat.getColor(mContext, R.color.black));
+                    holder.quantityConst.setTextColor(ContextCompat.getColor(mContext, R.color.black));
+                    holder.img.setAlpha(1f);
+                    holder.maxBorrowDate.setTextColor(ContextCompat.getColor(mContext, R.color.black));
+                    holder.MaxBorrowDate_const.setTextColor(ContextCompat.getColor(mContext, R.color.black));
+                    holder.MaxBorrowDate_const2.setTextColor(ContextCompat.getColor(mContext, R.color.black));
                 }
             } else if (radioGroup.getCheckedRadioButtonId() == R.id.tag_selected) {
                 holder.quantity.setVisibility(View.INVISIBLE);
@@ -371,6 +378,14 @@ public class DeviceList extends Fragment {
                     holder.maxBorrowDate.setTextColor(ContextCompat.getColor(mContext, R.color.transparent));
                     holder.MaxBorrowDate_const.setTextColor(ContextCompat.getColor(mContext, R.color.transparent));
                     holder.MaxBorrowDate_const2.setTextColor(ContextCompat.getColor(mContext, R.color.transparent));
+                } else {
+                    holder.name.setTextColor(ContextCompat.getColor(mContext, R.color.black));
+                    holder.tag.setTextColor(ContextCompat.getColor(mContext, R.color.black));
+                    holder.rfidConst.setTextColor(ContextCompat.getColor(mContext, R.color.black));
+                    holder.img.setAlpha(1f);
+                    holder.maxBorrowDate.setTextColor(ContextCompat.getColor(mContext, R.color.black));
+                    holder.MaxBorrowDate_const.setTextColor(ContextCompat.getColor(mContext, R.color.black));
+                    holder.MaxBorrowDate_const2.setTextColor(ContextCompat.getColor(mContext, R.color.black));
                 }
             }
 
@@ -384,29 +399,28 @@ public class DeviceList extends Fragment {
                 mGroupData.clear();
                 if (charText.length() == 0) {
                     mGroupData.addAll(tmpGroupData);
-                    notifyDataSetChanged();
                 } else {
                     for (DeviceGroupName deviceGroupName : tmpGroupData) {
-                        if (deviceGroupName.getName().toLowerCase().contains(charText)) {
+                        if (deviceGroupName != null && deviceGroupName.getName() != null &&
+                                deviceGroupName.getName().toLowerCase().contains(charText)) {
                             mGroupData.add(deviceGroupName);
                         }
-                        notifyDataSetChanged();
                     }
-
                 }
+                notifyDataSetChanged();
             } else if (radioGroup.getCheckedRadioButtonId() == R.id.tag_selected) {
                 mData.clear();
                 if (charText.length() == 0) {
                     mData.addAll(tmpData);
-                    notifyDataSetChanged();
                 } else {
                     for (Device device : tmpData) {
-                        if (device.getName().toLowerCase().contains(charText)) {
+                        if (device != null && device.getName() != null &&
+                                device.getName().toLowerCase().contains(charText)) {
                             mData.add(device);
                         }
-                        notifyDataSetChanged();
                     }
                 }
+                notifyDataSetChanged();
             }
 
         }

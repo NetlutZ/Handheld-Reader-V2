@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 
-public class Device implements Serializable {
+public class Device implements Serializable, Comparable<Device>  {
     private int id;
     private String name;
     private String serialNumber;
@@ -156,6 +156,21 @@ public class Device implements Serializable {
 
     public void setRfidStatus(String rfidStatus) {
         this.rfidStatus = rfidStatus;
+    }
+
+    @Override
+    public int compareTo(Device otherDevice) {
+        // Compare devices based on their names (you can change the criteria as needed)
+        if (this.name == null && otherDevice.name == null) {
+            return 0; // Both names are null, consider them equal
+        } else if (this.name == null) {
+            return -1; // This name is null, consider it less than the other
+        } else if (otherDevice.name == null) {
+            return 1; // The other name is null, consider it less than this
+        } else {
+            // Compare devices based on their names
+            return this.name.compareTo(otherDevice.name);
+        }
     }
 }
 

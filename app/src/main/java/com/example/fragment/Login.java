@@ -1,6 +1,9 @@
 package com.example.fragment;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -14,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -112,6 +116,12 @@ public class Login extends Fragment {
 
                                 MainActivity.isloggedIn = true;
                                 MainActivity.updateLoginStatus(getActivity());
+
+                                // Hide keyboard
+                                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                if (imm != null) {
+                                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                                }
 
                                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new Home()).commit();
                             } catch (Exception e) {
