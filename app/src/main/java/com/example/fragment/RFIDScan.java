@@ -60,9 +60,11 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import java.util.*;
+
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.activation.*;
+
 public class RFIDScan extends KeyDwonFragment {
     private boolean loopFlag = false;
     private int inventoryFlag = 1;
@@ -99,6 +101,8 @@ public class RFIDScan extends KeyDwonFragment {
     private LocalDateTime dateTimeNow = LocalDateTime.now();
     private String from = "netleclub1@gmail.com";
     private String to = "boonyathorn.j@ku.th";
+    private String passWord = "wiesttkduequzyqk";
+    private ProgressDialog dialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -212,12 +216,12 @@ public class RFIDScan extends KeyDwonFragment {
         initUHF();
 
         //TODO - DELETE THIS
-        //GetTmpDevice getTmpDevice = new GetTmpDevice();
-        //getTmpDevice.execute();
+        GetTmpDevice getTmpDevice = new GetTmpDevice();
+        getTmpDevice.execute();
         //tmpData();
     }
 
-    public static void sendEmail(final String username, final String password, String recipientEmail, String subject, String body, String titleBody) {
+    public void sendEmail(final String username, final String password, String recipientEmail, String subject, String body, String titleBody) {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -337,8 +341,6 @@ public class RFIDScan extends KeyDwonFragment {
     private class Confirm implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-//            sendEmail(from, "wiesttkduequzyqk", to, "Test", "Test");
-
             // Check session and get userId
             SessionManagement sessionManagement = new SessionManagement(getActivity());
             sessionManagement.checkSessionTimeout();
@@ -373,6 +375,12 @@ public class RFIDScan extends KeyDwonFragment {
                 }
 
                 if (canFunction) {
+                    dialog = new ProgressDialog(getActivity());
+                    dialog.show();
+                    dialog.setContentView(R.layout.progress_dialog);
+                    dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                    dialog.setCancelable(false); // Prevent dialog from being dismissed
+
                     List<Integer> listDeviceId = new ArrayList<>();
                     String activityDeviceId = "";
                     String lastBorrowActivityCode;
@@ -461,8 +469,18 @@ public class RFIDScan extends KeyDwonFragment {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    sendEmail(from, "wiesttkduequzyqk", to, "Test", mailData, mailTitleData);
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SuccessFunction()).commit();
+
+                    String finalMailData = mailData;
+                    String finalMailTitleData = mailTitleData;
+                    Thread sendMailThread = new Thread() {
+                        @Override
+                        public void run() {
+                            sendEmail(from, passWord, to, "Test", finalMailData, finalMailTitleData);
+                            dialog.dismiss();
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SuccessFunction()).commit();
+                        }
+                    };
+                    sendMailThread.start();
                 }
             } else if (function.equals("return")) {
                 for (int i = 0; i < customAdapter.getCount(); i++) {
@@ -480,6 +498,14 @@ public class RFIDScan extends KeyDwonFragment {
                 }
 
                 if (canFunction) {
+                    /*
+                    dialog = new ProgressDialog(getActivity());
+                    dialog.show();
+                    dialog.setContentView(R.layout.progress_dialog);
+                    dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                    dialog.setCancelable(false);
+                     */
+
                     List<Integer> listDeviceId = new ArrayList<>();
                     String activityDeviceId = "";
                     String lastReturnActivityCode;
@@ -562,6 +588,20 @@ public class RFIDScan extends KeyDwonFragment {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    /*
+                    String finalMailData = mailData;
+                    String finalMailTitleData = mailTitleData;
+                    Thread sendMailThread = new Thread() {
+                        @Override
+                        public void run() {
+                            sendEmail(from, passWord, to, "Test", finalMailData, finalMailTitleData);
+                            dialog.dismiss();
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SuccessFunction()).commit();
+                        }
+                    };
+                    sendMailThread.start();
+
+                     */
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SuccessFunction()).commit();
                 }
             }
@@ -956,9 +996,9 @@ public class RFIDScan extends KeyDwonFragment {
                         finalHolder.returnDate.setText(device.getReturnDate());
                     }
                 });
-                if(device.getReturnDateISO().equals("")){
+                if (device.getReturnDateISO().equals("")) {
                     device.setReturnDate(dateTimeNow.toString());
-                }else{
+                } else {
 
                 }
                 holder.returnDate.setText(device.getReturnDate());

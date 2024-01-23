@@ -10,13 +10,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioGroup;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -29,12 +33,14 @@ import com.example.handheld_reader.BuildConfig;
 import com.example.handheld_reader.R;
 import com.example.model.Device;
 import com.example.model.DeviceGroupName;
+import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import com.shawnlin.numberpicker.NumberPicker;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,19 +49,43 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class DeviceList extends Fragment{
+public class DeviceList extends Fragment {
     Activity activity = getActivity();
     RadioGroup radioGroup;
     SearchView searchView;
     CustomAdapter customAdapter;
     ListView listView;
     Device[] devices;
+    Button cancelButton, confirmButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_device_list, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+//        List<HashMap<String, String>> dataList = new ArrayList<>();
+//        HashMap<String, String> item1 = new HashMap<>();
+//        item1.put("name", "John Doe");
+//        item1.put("age", "25");
+//        dataList.add(item1);
+//
+//        HashMap<String, String> item2 = new HashMap<>();
+//        item2.put("name", "Jane Smith");
+//        item2.put("age", "30");
+//        dataList.add(item2);
+//
+//        String[] from = {"name", "age"};
+//        int[] to = {android.R.id.text1, android.R.id.text2};
+//
+//        SimpleAdapter adapter = new SimpleAdapter(requireContext(), dataList, android.R.layout.simple_list_item_2, from, to);
+//        ListView listView = view.findViewById(R.id.deviceList);
+//        listView.setAdapter(adapter);
     }
 
     @Override
@@ -78,6 +108,8 @@ public class DeviceList extends Fragment{
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close
         );
+        NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_devicelist);
 
         // Synchronize the state of the drawer toggle with the DrawerLayout
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
@@ -89,6 +121,18 @@ public class DeviceList extends Fragment{
         listView = (ListView) getActivity().findViewById(R.id.deviceList);
         customAdapter = new CustomAdapter(getActivity().getApplicationContext());
         listView.setAdapter(customAdapter);
+
+        View test = getView().findViewById(R.id.bottomBar);
+        cancelButton = (Button) test.findViewById(R.id.btnCancel);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                customAdapter.addGroup(new DeviceGroupName(1, "Test", 0, 1, "test.jpg"));
+                customAdapter.notifyDataSetChanged();
+            }
+        });
+        confirmButton = (Button) test.findViewById(R.id.btnConfirm);
+        confirmButton.setVisibility(View.GONE);
 
         // Click Device and go to FindDeviceLocation
         listView.setOnItemClickListener((parent, view, position, id) -> {
@@ -152,8 +196,8 @@ public class DeviceList extends Fragment{
             }
         });
 
-        GetDevice getDevice = new GetDevice();
-        getDevice.execute();
+         GetDevice getDevice = new GetDevice();
+         getDevice.execute();
     }
 
     private void GroupDevice() {
@@ -235,6 +279,10 @@ public class DeviceList extends Fragment{
                 Gson gson = new Gson();
                 devices = gson.fromJson(s, Device[].class);
                 Arrays.sort(devices);
+
+//                customAdapter = new CustomAdapter(getActivity().getApplicationContext());
+//                listView.setAdapter(customAdapter);
+//
                 GroupDevice();
             }
         }
@@ -272,6 +320,12 @@ public class DeviceList extends Fragment{
         public void addData(Device data) {
             mData.add(data);
             tmpData.add(data);
+            notifyDataSetChanged();
+        }
+
+        public void addGroup(DeviceGroupName data) {
+            mGroupData.add(data);
+            tmpGroupData.add(data);
             notifyDataSetChanged();
         }
 
@@ -388,7 +442,6 @@ public class DeviceList extends Fragment{
                     holder.MaxBorrowDate_const2.setTextColor(ContextCompat.getColor(mContext, R.color.black));
                 }
             }
-
             return convertView;
         }
 

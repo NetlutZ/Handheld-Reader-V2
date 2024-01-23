@@ -1,6 +1,7 @@
 package com.example.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -64,6 +65,7 @@ public class History extends Fragment {
     private Activity activity = getActivity();
     private String SHARED_PREF_NAME = "session";
     private String SESSION_KEY = "session_user_id";
+    private ProgressDialog dialog;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -101,6 +103,13 @@ public class History extends Fragment {
 
         }));
 
+        dialog = new ProgressDialog(getActivity());
+        dialog.show();
+        dialog.setContentView(R.layout.progress_dialog);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.setCancelable(false); // Prevent dialog from being dismissed
+        TextView dialogText = dialog.findViewById(R.id.dialog_text);
+        dialogText.setText("Loading Data...");
         new GetHistoryData().execute();
 
     }
@@ -116,6 +125,7 @@ public class History extends Fragment {
 
 
     public class GetHistoryData extends AsyncTask<String, Void, String> {
+
         @Override
         protected String doInBackground(String... params) {
             SessionManagement sessionManagement = new SessionManagement(getActivity());
@@ -252,6 +262,7 @@ public class History extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            dialog.dismiss();
         }
     }
 

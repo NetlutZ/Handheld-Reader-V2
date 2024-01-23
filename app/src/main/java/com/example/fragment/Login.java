@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -27,6 +28,7 @@ import com.example.handheld_reader.MainActivity;
 import com.example.handheld_reader.R;
 import com.example.model.User;
 import com.example.session.SessionManagement;
+import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONObject;
 
@@ -70,6 +72,8 @@ public class Login extends Fragment {
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close
         );
+        NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_home);
 
         username = getActivity().findViewById(R.id.userId_login);
         password = getActivity().findViewById(R.id.password_login);

@@ -32,6 +32,7 @@ import com.example.handheld_reader.R;
 import com.example.model.Device;
 import com.example.model.DeviceGroupName;
 import com.example.view.UhfLocationCanvasView;
+import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import com.rscja.deviceapi.RFIDWithUHFUART;
 import com.rscja.deviceapi.interfaces.IUHF;
@@ -85,6 +86,8 @@ public class RFIDLocation extends Fragment {
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close
         );
+        NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_location);
 
         playSoundThread = new PlaySoundThread();
         playSoundThread.start();

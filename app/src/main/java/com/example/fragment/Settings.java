@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.example.handheld_reader.MainActivity;
 import com.example.handheld_reader.R;
+import com.google.android.material.navigation.NavigationView;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.rscja.deviceapi.RFIDWithUHFUART;
 import com.rscja.deviceapi.exception.ConfigurationException;
@@ -75,6 +76,8 @@ public class Settings extends Fragment implements View.OnClickListener {
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close
         );
+        NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_settings);
 
         btnGetPower = getView().findViewById(R.id.btnGetPower1);
         btnSetPower = getView().findViewById(R.id.btnSetPower1);

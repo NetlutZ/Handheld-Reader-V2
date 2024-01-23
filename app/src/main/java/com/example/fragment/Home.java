@@ -21,6 +21,7 @@ import android.widget.Button;
 import com.example.handheld_reader.MainActivity;
 import com.example.handheld_reader.R;
 import com.example.session.SessionManagement;
+import com.google.android.material.navigation.NavigationView;
 
 public class Home extends Fragment {
     Button borrowButton, returnButton, deviceListButton, findDeviceButton;
@@ -53,6 +54,8 @@ public class Home extends Fragment {
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close
         );
+        NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_home);
 
         borrowButton = getView().findViewById(R.id.home_borrow_button);
         returnButton = getView().findViewById(R.id.home_return_button);

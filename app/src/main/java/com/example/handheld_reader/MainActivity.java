@@ -3,9 +3,11 @@ package com.example.handheld_reader;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,7 +19,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import com.example.fragment.DeviceList;
 import com.example.fragment.DeviceNotReturn;
@@ -42,6 +46,7 @@ public class MainActivity extends BaseTabFragmentActivity implements NavigationV
     String SESSION_USERNAME = "session_username";
     String SESSION_NAME = "session_name";
     String SESSION_EMAIL = "session_email";
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +62,7 @@ public class MainActivity extends BaseTabFragmentActivity implements NavigationV
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         headerView = navigationView.getHeaderView(0);
@@ -95,17 +100,28 @@ public class MainActivity extends BaseTabFragmentActivity implements NavigationV
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.user_menu_login) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, new Login())
-                    .commit();
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (currentFragment instanceof Login) {
+
+            } else {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, new Login())
+                        .commit();
+            }
         } else if (item.getItemId() == R.id.user_menu_account) {
 
         } else if (item.getItemId() == R.id.user_menu_history) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, new History())
-                    .commit();
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (currentFragment instanceof History) {
+
+            } else {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, new History())
+                        .commit();
+            }
+
         } else if (item.getItemId() == R.id.user_menu_logout) {
             logout(null);
         }else if(item.getItemId() == R.id.user_menu_your_borrow){
@@ -173,7 +189,14 @@ public class MainActivity extends BaseTabFragmentActivity implements NavigationV
         } else if (item.getItemId() == R.id.nav_location) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new RFIDLocation()).commit();
         } else if (item.getItemId() == R.id.nav_devicelist) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DeviceList()).commit();
+            // TODO: it good to fixed listView in DeviceList not display instead of this
+            // Check if the current fragment is DeviceList
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (currentFragment instanceof DeviceList) {
+
+            } else {
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DeviceList()).commit();
+            }
         } else if (item.getItemId() == R.id.nav_settings) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new Settings()).commit();
         } else if (item.getItemId() == R.id.nav_test) {
