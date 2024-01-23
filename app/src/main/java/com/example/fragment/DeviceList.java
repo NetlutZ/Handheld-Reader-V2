@@ -30,6 +30,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.handheld_reader.BuildConfig;
+import com.example.handheld_reader.MainActivity;
 import com.example.handheld_reader.R;
 import com.example.model.Device;
 import com.example.model.DeviceGroupName;
@@ -57,6 +58,7 @@ public class DeviceList extends Fragment {
     ListView listView;
     Device[] devices;
     Button cancelButton, confirmButton;
+    MainActivity mContext;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -122,15 +124,11 @@ public class DeviceList extends Fragment {
         customAdapter = new CustomAdapter(getActivity().getApplicationContext());
         listView.setAdapter(customAdapter);
 
+        mContext = (MainActivity) getActivity();
+
         View test = getView().findViewById(R.id.bottomBar);
         cancelButton = (Button) test.findViewById(R.id.btnCancel);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                customAdapter.addGroup(new DeviceGroupName(1, "Test", 0, 1, "test.jpg"));
-                customAdapter.notifyDataSetChanged();
-            }
-        });
+        cancelButton.setOnClickListener(new ToHome());
         confirmButton = (Button) test.findViewById(R.id.btnConfirm);
         confirmButton.setVisibility(View.GONE);
 
@@ -200,6 +198,12 @@ public class DeviceList extends Fragment {
          getDevice.execute();
     }
 
+    private class ToHome implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            mContext.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new Home()).commit();
+        }
+    }
     private void GroupDevice() {
         List<DeviceGroupName> contentList = new ArrayList<>();
         for (Device device : devices) {

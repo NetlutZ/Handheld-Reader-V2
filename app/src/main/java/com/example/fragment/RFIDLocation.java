@@ -38,6 +38,7 @@ import com.rscja.deviceapi.RFIDWithUHFUART;
 import com.rscja.deviceapi.interfaces.IUHF;
 import com.rscja.deviceapi.interfaces.IUHFLocationCallback;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +52,7 @@ public class RFIDLocation extends Fragment {
     private RFIDWithUHFUART mReader;
     private UhfLocationCanvasView llChart;
     private EditText etEPC;
-    private Button btStart, btStop;
+    private Button btStart, btStop, searchButton;
     private PlaySoundThread playSoundThread;
     private View includeView;
     TextView deviceName, deviceTag, quantity, quantityConst;
@@ -96,6 +97,7 @@ public class RFIDLocation extends Fragment {
         etEPC = getView().findViewById(R.id.etEPC);
         btStart = getView().findViewById(R.id.btStart);
         btStop = getView().findViewById(R.id.btStop);
+        searchButton = getView().findViewById(R.id.search_rfid);
         includeView = getView().findViewById(R.id.deviceLocation);
         includeView.findViewById(R.id.btnDelete).setVisibility(View.GONE);
         includeView.findViewById(R.id.QuantityDevice).setVisibility(View.GONE);
@@ -110,6 +112,7 @@ public class RFIDLocation extends Fragment {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
+            includeView.setVisibility(View.VISIBLE);
             DeviceGroupName deviceGroupName = (DeviceGroupName) bundle.getSerializable("deviceGroupName");
             Device device = (Device) bundle.getSerializable("device");
             if (deviceGroupName != null) {
@@ -119,6 +122,7 @@ public class RFIDLocation extends Fragment {
             } else if (device != null) {
                 deviceName.setText(device.getName());
                 deviceTag.setText(device.getRfid());
+                etEPC.setText(device.getRfid());
             }
         }
 
@@ -132,6 +136,48 @@ public class RFIDLocation extends Fragment {
             @Override
             public void onClick(View v) {
                 stopLocation();
+            }
+        });
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String epc = etEPC.getText().toString();
+                if (epc.equals("")) {
+                    Toast.makeText(getActivity(), R.string.location_fail, Toast.LENGTH_SHORT).show();
+                    return;
+                }else{
+                    OkHttpClient client = new OkHttpClient();
+                    String url = BuildConfig.BASE_URL + "/device" + "?rfid=" + epc;
+
+                    Request request = new Request.Builder()
+                            .url(url)
+                            .build();
+
+                    try(Response response = client.newCall(request).execute()){
+                        Gson gson = new Gson();
+                        devices = gson.fromJson(response.body().string(), Device[].class);
+                        if (devices.length > 0) {
+                            //random in devices and rfidStatus = InStorage
+                            for (int i = 0; i < devices.length; i++) {
+                                if (devices[i].getRfidStatus() != null) {
+                                    if (devices[i].getRfidStatus().equals("InStorage")) {
+                                        deviceName.setText(devices[i].getName());
+                                        deviceTag.setText(devices[i].getRfid());
+                                        etEPC.setText(devices[i].getRfid());
+                                        includeView.setVisibility(View.VISIBLE);
+                                        break;
+                                    }
+                                }
+                            }
+
+                        }else{
+                            Toast.makeText(getActivity(), "RFID Not Found", Toast.LENGTH_SHORT).show();
+                        }
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
             }
         });
 
@@ -179,6 +225,7 @@ public class RFIDLocation extends Fragment {
                         if (devices[i].getRfidStatus().equals("InStorage")) {
                             deviceName.setText(devices[i].getName());
                             deviceTag.setText(devices[i].getRfid());
+                            etEPC.setText(devices[i].getRfid());
                             break;
                         }
                     }
@@ -190,7 +237,7 @@ public class RFIDLocation extends Fragment {
 
     private void startLocation() {
         String epc = etEPC.getText().toString();
-        epc = deviceTag.getText().toString();
+        // epc = deviceTag.getText().toString();
         if (epc.equals("")) {
             Toast.makeText(activity, R.string.location_fail, Toast.LENGTH_SHORT).show();
             return;

@@ -158,7 +158,7 @@ public class MainActivity extends BaseTabFragmentActivity implements NavigationV
     private void updateOptionsMenu(Menu menu) {
         // Show/hide menu items based on login status
         menu.findItem(R.id.user_menu_login).setVisible(!isloggedIn);
-        menu.findItem(R.id.user_menu_account).setVisible(isloggedIn);
+        menu.findItem(R.id.user_menu_account).setVisible(false);
         menu.findItem(R.id.user_menu_history).setVisible(isloggedIn);
         menu.findItem(R.id.user_menu_logout).setVisible(isloggedIn);
         menu.findItem(R.id.user_menu_your_borrow).setVisible(isloggedIn);

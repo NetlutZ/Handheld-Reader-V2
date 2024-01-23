@@ -16,18 +16,26 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="EPC:" />
+                android:text="RFID:" />
             <EditText
                 android:id="@+id/etEPC"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+            <Button
+                android:id="@+id/search_rfid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Search"
+                android:textColor="@color/black" />
         </LinearLayout>
 
         <include
             android:id="@+id/deviceLocation"
             layout="@layout/listtag_items_design"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:visibility="invisible"/>
 
         <LinearLayout
             android:layout_width="match_parent"
