@@ -243,11 +243,13 @@ public class DeviceNotReturn extends Fragment {
                 holder.deleteButton.setVisibility(View.GONE);
                 holder.name = convertView.findViewById(R.id.DeviceName);
                 holder.tag = convertView.findViewById(R.id.TvTagUii);
+                holder.tag.setVisibility(View.GONE);
                 holder.quantity = convertView.findViewById(R.id.QuantityDevice);
                 holder.quantity.setVisibility(View.GONE);
                 holder.img = convertView.findViewById(R.id.DeviceImage);
                 holder.maxBorrowDate = convertView.findViewById(R.id.MaxBorrowDate);
                 holder.rfidConst = convertView.findViewById(R.id.rfid_const);
+                holder.rfidConst.setVisibility(View.GONE);
                 holder.quantityConst = convertView.findViewById(R.id.quantity_const);
                 holder.quantityConst.setVisibility(View.GONE);
                 holder.MaxBorrowDate_const = convertView.findViewById(R.id.MaxBorrowDate_const);

@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -66,6 +67,7 @@ public class History extends Fragment {
     private String SHARED_PREF_NAME = "session";
     private String SESSION_KEY = "session_user_id";
     private ProgressDialog dialog;
+    private Button cancelButton, confirmButton;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -112,6 +114,19 @@ public class History extends Fragment {
         dialogText.setText("Loading Data...");
         new GetHistoryData().execute();
 
+        View test = getView().findViewById(R.id.bottomBar);
+        cancelButton = (Button) test.findViewById(R.id.btnCancel);
+        cancelButton.setOnClickListener(new ToHome());
+        confirmButton = (Button) test.findViewById(R.id.btnConfirm);
+        confirmButton.setVisibility(View.GONE);
+
+    }
+
+    private class ToHome implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new Home()).commit();
+        }
     }
 
     public void OpenDialog(int position) {

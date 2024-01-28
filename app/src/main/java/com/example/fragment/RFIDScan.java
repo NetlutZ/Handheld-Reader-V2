@@ -216,8 +216,8 @@ public class RFIDScan extends KeyDwonFragment {
         initUHF();
 
         //TODO - DELETE THIS
-        GetTmpDevice getTmpDevice = new GetTmpDevice();
-        getTmpDevice.execute();
+        //GetTmpDevice getTmpDevice = new GetTmpDevice();
+        //getTmpDevice.execute();
         //tmpData();
     }
 
@@ -251,7 +251,7 @@ public class RFIDScan extends KeyDwonFragment {
                     + body
                     + "</tbody></table>"
                     + "</body></html>";
-            message.setContent(htmlContent, "text/html");
+            message.setContent(htmlContent, "text/html;charset=UTF-8");
 //            message.setText(body);
 
             Transport.send(message);
@@ -362,7 +362,7 @@ public class RFIDScan extends KeyDwonFragment {
                     Device device = customAdapter.getItem(i);
                     if (device.getRfidStatus() != null) {
                         if (device.getRfidStatus().equals(getString(R.string.Borrowed))) {
-                            Toast.makeText(getActivity(), "Cannot borrow device because " + device.getRfid() + " is Borrowed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "ไม่สามารถยืมได้เนื่องจาก" + device.getName() + "ที่ตำแหน่ง " + (i+1) + " ถูกยืมโดยคนอื่น", Toast.LENGTH_SHORT).show();
                             canFunction = false;
                             break;
                         }
@@ -486,7 +486,7 @@ public class RFIDScan extends KeyDwonFragment {
                 for (int i = 0; i < customAdapter.getCount(); i++) {
                     Device device = customAdapter.getItem(i);
                     if (device.getUserId() != userId) {
-                        Toast.makeText(getActivity(), "Cannot return device because " + device.getRfid() + " is not borrowed by you", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "ไม่สามารถคืนอุปกรณ์ได้เนื่องจาก " + device.getName() + "ที่ตำแหน่ง" + (i+1) + " ไม่ได้ถูกยืมโดยคุณ", Toast.LENGTH_SHORT).show();
                         canFunction = false;
                         break;
                     }
@@ -727,6 +727,9 @@ public class RFIDScan extends KeyDwonFragment {
 
                     for (int i = 0; i < jsonArray.length(); i++) {      // for duplicate rfid tag
                         JSONObject obj = jsonArray.getJSONObject(i);
+                        if(obj.getString("returnDate").equals("null")) {
+                            obj.put("returnDate", dateTimeNow.toString());
+                        }
                         Gson gson = new Gson();
                         device = gson.fromJson(obj.toString(), Device.class);
                         if (index == -1) {
@@ -956,11 +959,13 @@ public class RFIDScan extends KeyDwonFragment {
                 holder.deleteButton = convertView.findViewById(R.id.btnDelete);
                 holder.name = convertView.findViewById(R.id.DeviceName);
                 holder.tag = convertView.findViewById(R.id.TvTagUii);
+                holder.tag.setVisibility(View.GONE);
                 holder.quantity = convertView.findViewById(R.id.QuantityDevice);
                 holder.img = convertView.findViewById(R.id.DeviceImage);
                 holder.maxBorrowDate = convertView.findViewById(R.id.MaxBorrowDate);
                 holder.datePicker = convertView.findViewById(R.id.picker_date);
                 holder.rfidConst = convertView.findViewById(R.id.rfid_const);
+                holder.rfidConst.setVisibility(View.GONE);
                 holder.quantityConst = convertView.findViewById(R.id.quantity_const);
                 holder.returnDate = convertView.findViewById(R.id.return_date);
                 convertView.setTag(holder);

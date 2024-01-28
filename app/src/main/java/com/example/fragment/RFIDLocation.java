@@ -109,6 +109,7 @@ public class RFIDLocation extends Fragment {
         getView().findViewById(R.id.quantity_const).setVisibility(View.GONE);
         getView().findViewById(R.id.picker_date).setVisibility(View.GONE);
         getView().findViewById(R.id.line4).setVisibility(View.GONE);
+        getView().findViewById(R.id.line2).setVisibility(View.GONE);
 
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -146,7 +147,7 @@ public class RFIDLocation extends Fragment {
                 if (epc.equals("")) {
                     Toast.makeText(getActivity(), R.string.location_fail, Toast.LENGTH_SHORT).show();
                     return;
-                }else{
+                } else {
                     OkHttpClient client = new OkHttpClient();
                     String url = BuildConfig.BASE_URL + "/device" + "?rfid=" + epc;
 
@@ -154,7 +155,7 @@ public class RFIDLocation extends Fragment {
                             .url(url)
                             .build();
 
-                    try(Response response = client.newCall(request).execute()){
+                    try (Response response = client.newCall(request).execute()) {
                         Gson gson = new Gson();
                         devices = gson.fromJson(response.body().string(), Device[].class);
                         if (devices.length > 0) {
@@ -171,10 +172,10 @@ public class RFIDLocation extends Fragment {
                                 }
                             }
 
-                        }else{
+                        } else {
                             Toast.makeText(getActivity(), "RFID Not Found", Toast.LENGTH_SHORT).show();
                         }
-                    }catch (IOException e){
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
@@ -196,14 +197,14 @@ public class RFIDLocation extends Fragment {
         protected String doInBackground(String... params) {
             try {
                 OkHttpClient client = new OkHttpClient();
-                String url = BuildConfig.BASE_URL + "/device" + "?name=" + name;
+                String url = BuildConfig.BASE_URL + "/device" + "?name=" + name + "&rfidStatus=InStorage";
 
                 Request request = new Request.Builder()
                         .url(url)
                         .build();
 
                 Response response = client.newCall(request).execute();
-                Log.d("Response Success : ", response.peekBody(2048).string());
+                // Log.d("Response Success : ", response.peekBody(2048).string());
                 // cant use response.body().string() twice so use peekBody() instead : https://stackoverflow.com/questions/60671465/retrofit-java-lang-illegalstateexception-closed
                 return response.body().string();
             } catch (Exception e) {
@@ -218,19 +219,13 @@ public class RFIDLocation extends Fragment {
             super.onPostExecute(s);
             Gson gson = new Gson();
             devices = gson.fromJson(s, Device[].class);
+            // random in devices
             if (devices.length > 0) {
-                //random in devices and rfidStatus = InStorage
-                for (int i = 0; i < devices.length; i++) {
-                    if (devices[i].getRfidStatus() != null) {
-                        if (devices[i].getRfidStatus().equals("InStorage")) {
-                            deviceName.setText(devices[i].getName());
-                            deviceTag.setText(devices[i].getRfid());
-                            etEPC.setText(devices[i].getRfid());
-                            break;
-                        }
-                    }
-                }
-
+                int randomNum = (int) (Math.random() * devices.length);
+                deviceName.setText(devices[randomNum].getName());
+                deviceTag.setText(devices[randomNum].getRfid());
+                etEPC.setText(devices[randomNum].getRfid());
+                Log.d("Find EPC", devices[randomNum].getRfid());
             }
         }
     }
@@ -263,7 +258,7 @@ public class RFIDLocation extends Fragment {
 
         });
         if (!result) {
-            Toast.makeText(activity, R.string.psam_msg_fail, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.psam_msg_fail, Toast.LENGTH_SHORT).show();
             Log.d("Location", "FAIL");
             return;
         }

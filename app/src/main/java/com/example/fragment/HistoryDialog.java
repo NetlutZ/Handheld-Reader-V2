@@ -186,6 +186,7 @@ public class HistoryDialog extends AppCompatDialogFragment {
                 viewHolder = new ViewHolder();
                 viewHolder.deviceNameView = convertView.findViewById(R.id.dialog_device_name);
                 viewHolder.deviceIdView = convertView.findViewById(R.id.dialog_device_id);
+                viewHolder.deviceIdView.setVisibility(View.GONE);
                 viewHolder.deviceImage = convertView.findViewById(R.id.dialog_device_image);
                 convertView.setTag(viewHolder);
             } else {

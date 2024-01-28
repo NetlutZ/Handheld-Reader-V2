@@ -257,7 +257,7 @@ public class DeviceList extends Fragment {
         protected String doInBackground(String... params) {
             try {
                 OkHttpClient client = new OkHttpClient();
-                String url = BuildConfig.BASE_URL + "/device";
+                String url = BuildConfig.BASE_URL + "/device/?rfidStatus=InStorage";
 
                 Request request = new Request.Builder()
                         .url(url)
@@ -415,10 +415,16 @@ public class DeviceList extends Fragment {
                     holder.MaxBorrowDate_const2.setTextColor(ContextCompat.getColor(mContext, R.color.black));
                 }
             } else if (radioGroup.getCheckedRadioButtonId() == R.id.tag_selected) {
+                /*
                 holder.quantity.setVisibility(View.INVISIBLE);
                 holder.quantityConst.setVisibility(View.INVISIBLE);
                 holder.tag.setVisibility(View.VISIBLE);
                 holder.rfidConst.setVisibility(View.VISIBLE);
+                 */
+                holder.quantity.setVisibility(View.GONE);
+                holder.quantityConst.setVisibility(View.GONE);
+                holder.tag.setVisibility(View.GONE);
+                holder.rfidConst.setVisibility(View.GONE);
 
                 Device device = getItem(position);
                 String imgUrl = BuildConfig.BASE_URL + "/device" + "/image/" + device.getImg();
