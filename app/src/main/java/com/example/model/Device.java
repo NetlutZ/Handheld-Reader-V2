@@ -31,7 +31,7 @@ public class Device implements Serializable, Comparable<Device>  {
         this.location = location;
         this.activityId = activityId;
         this.userId = userId;
-        this.maxBorrowDays = 1;
+        this.maxBorrowDays = maxBorrowDays;
         this.image = image;
         this.returnDate = returnDate;
     }

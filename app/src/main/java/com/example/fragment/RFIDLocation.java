@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -37,6 +38,7 @@ import com.google.gson.Gson;
 import com.rscja.deviceapi.RFIDWithUHFUART;
 import com.rscja.deviceapi.interfaces.IUHF;
 import com.rscja.deviceapi.interfaces.IUHFLocationCallback;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,7 +57,8 @@ public class RFIDLocation extends Fragment {
     private Button btStart, btStop, searchButton;
     private PlaySoundThread playSoundThread;
     private View includeView;
-    TextView deviceName, deviceTag, quantity, quantityConst;
+    TextView deviceName, deviceTag, quantity, quantityConst, deviceMaxBorrowDay;
+    ImageView deviceImage;
     Activity activity = getActivity();
     Device[] devices;
     private String name;
@@ -104,6 +107,8 @@ public class RFIDLocation extends Fragment {
 
         deviceName = includeView.findViewById(R.id.DeviceName);
         deviceTag = includeView.findViewById(R.id.TvTagUii);
+        deviceMaxBorrowDay = includeView.findViewById(R.id.MaxBorrowDate);
+        deviceImage = includeView.findViewById(R.id.DeviceImage);
 
         getView().findViewById(R.id.QuantityDevice).setVisibility(View.GONE);
         getView().findViewById(R.id.quantity_const).setVisibility(View.GONE);
@@ -225,7 +230,12 @@ public class RFIDLocation extends Fragment {
                 deviceName.setText(devices[randomNum].getName());
                 deviceTag.setText(devices[randomNum].getRfid());
                 etEPC.setText(devices[randomNum].getRfid());
-                Log.d("Find EPC", devices[randomNum].getRfid());
+                deviceMaxBorrowDay.setText(String.valueOf(devices[randomNum].getMaxBorrowDays()));
+
+                String imgUrl = BuildConfig.BASE_URL + "/device" + "/image/" + devices[randomNum].getImg();
+                Picasso.get().load(imgUrl).into(deviceImage);
+
+                // Log.d("Find EPC", devices[randomNum].getRfid());
             }
         }
     }
